@@ -7,7 +7,7 @@ const Task = require("../models/taskModel");
 // @route   GET /api/tasks
 // @access  Private
 const getTasks = asyncHandler(async (req, res) => {
-  const tasks = await Task.find();
+  const tasks = await Task.find({ userId: req.user.id });
 
   res.status(200).json(tasks);
 });
@@ -19,7 +19,7 @@ const setTask = asyncHandler(async (req, res) => {
   let task;
 
   try {
-    task = await Task.create(req.body);
+    task = await Task.create({ userId: req.user.id, ...req.body });
   } catch (error) {
     res.status(400);
     throw error;
@@ -40,6 +40,12 @@ const updateTask = asyncHandler(async (req, res) => {
   if (!task) {
     res.status(400);
     throw new Error("Task not found");
+  }
+
+  // Make sure the logged in user matches the task user
+  if (task.userId.toString() !== req.user?.id) {
+    res.status(401);
+    throw new Error("User not authorized!");
   }
 
   let updatedTask;
@@ -69,6 +75,12 @@ const deleteTask = asyncHandler(async (req, res) => {
   if (!task) {
     res.status(400);
     throw new Error("Task not found");
+  }
+
+  // Make sure the logged in user matches the task user
+  if (task.userId.toString() !== req.user?.id) {
+    res.status(401);
+    throw new Error("User not authorized!");
   }
 
   await task.remove();
