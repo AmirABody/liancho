@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node backend/server",
-    "server": "nodemon backend/server"
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run client\" \"npm run server\""
   },
   "keywords": [
     "Task",
@@ -14,7 +16,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/AmirABody/liancho"
-  },  
+  },
   "author": "Mahdi Amirabadi",
   "license": "MIT",
   "dependencies": {
@@ -26,6 +28,7 @@
     "mongoose": "^6.2.4"
   },
   "devDependencies": {
+    "concurrently": "^7.0.0",
     "nodemon": "^2.0.15"
   }
 }
