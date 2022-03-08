@@ -11,6 +11,10 @@
     "Task",
     "Management"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AmirABody/liancho"
+  },  
   "author": "Mahdi Amirabadi",
   "license": "MIT",
   "dependencies": {
