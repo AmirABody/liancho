@@ -5,7 +5,7 @@ import Button from "./buttons/Button";
 import { ThemeContext, ThemeContextInterface } from "../contexts/ThemeContext";
 
 export default function Header() {
-  const { theme, setTheme } = useContext(ThemeContext) as ThemeContextInterface;
+  const { theme, setTheme } = useContext(ThemeContext)!;
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
