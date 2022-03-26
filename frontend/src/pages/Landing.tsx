@@ -6,6 +6,7 @@ import Slider from "../components/Slider";
 import SignUpModal from "../components/SignUpModal";
 import { useState } from "react";
 import SignInModal from "../components/SignInModal";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Landing() {
   const [modal, setModal] = useState<string>("");
@@ -52,8 +53,14 @@ function Landing() {
           </div>
         </div>
 
-        {modal === 'signup' && <SignUpModal setModal={setModal} />}
-        {modal === 'signin' && <SignInModal setModal={setModal} />}
+        <AnimatePresence>
+          {modal.length && (
+            <motion.div key="modal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              {modal === "signup" && <SignUpModal setModal={setModal} />}
+              {modal === "signin" && <SignInModal setModal={setModal} />}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

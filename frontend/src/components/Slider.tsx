@@ -28,7 +28,7 @@ export default function Slider() {
           delay: 3000,
           disableOnInteraction: false,
         }}
-        onSwiper={(swiper) => console.log(swiper)}
+        // onSwiper={(swiper) => console.log(swiper)}
       >
         <SwiperSlide className="pt-10">
           <SliderItem

@@ -4,7 +4,8 @@ export interface User {
   password: string;
 }
 
-export interface Response {
-  type: "success" | "warning" | "error";
+export interface Toast {
+  id: number;
+  type: "info" | "success" | "warning" | "error";
   message: string;
 }

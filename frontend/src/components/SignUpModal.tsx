@@ -11,8 +11,8 @@ import PuffLoader from "react-spinners/PuffLoader";
 
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { register } from "../pages/user-api";
-import { Response as ResponseType, User } from "../interfaces";
-import Response from "./Response";
+import { User } from "../interfaces";
+import { toast, ToastContainer } from "./CustomToast";
 
 interface SignUpModalProps {
   setModal: (modal: string) => void;
@@ -36,16 +36,15 @@ const initialFValues = {
 
 export default function SignUpModal({ setModal }: SignUpModalProps) {
   const [passwordVisible, togglePasswordVisible] = useToggle(false);
-  const [response, setResponse] = useState<ResponseType | null>(null);
 
   const mutation = useMutation((user: User) => register(user));
 
   useEffect(() => {
-    if (mutation.isSuccess) setResponse({ type: "success", message: "ثبت نام با موفقیت انجام شد!" });
+    if (mutation.isSuccess) toast({ type: "success", message: "ثبت نام با موفقیت انجام شد!" });
   }, [mutation.isSuccess]);
 
   useEffect(() => {
-    if (mutation.isError) setResponse({ type: "error", message: (mutation.error as Error).message });
+    if (mutation.isError) toast({ type: "error", message: (mutation.error as Error).message });
   }, [mutation.isError]);
 
   function validate(fieldValues: Partial<FieldValuesType> = values): boolean | void {
@@ -72,10 +71,10 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(values);
+    // console.log(values);
 
     if (values.password !== values.confirmPassword) {
-      setResponse({ type: "warning", message: "رمز عبورهای وارد شده مطابقت ندارند!" });
+      toast({ type: "warning", message: "رمز عبورهای وارد شده تطابق ندارند!" });
     } else {
       const userData = {
         fullName: values.fullName,
@@ -88,74 +87,76 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
   };
 
   return (
-    <Modal setModal={setModal}>
-      <div className="flex flex-col gap-y-2">
-        <div className="flex justify-between items-center mb-2">
-          <h1 className="text-[1.3rem] font-semibold text-gray-800 dark:text-white">ثبت نام</h1>
-          <button onClick={() => setModal("")}>
-            <Icon icon="gridicons:cross" color="#DC2626" width={22} />
-          </button>
-        </div>
-        {response && <Response type={response.type} message={response.message} setResponse={setResponse} />}
-        <form className="flex flex-col gap-y-5 mt-3" autoComplete="off" onSubmit={handleSubmit}>
-          <Controls.Input
-            name="fullName"
-            label="نام و نام خانوادگی"
-            value={values.fullName}
-            onChange={handleInputChange}
-            error={errors.fullName}
-          />
-          <Controls.Input
-            name="email"
-            type="email"
-            label="ایمیل"
-            value={values.email}
-            onChange={handleInputChange}
-            error={errors.email}
-          />
-          <Controls.Input
-            name="password"
-            type={passwordVisible ? "text" : "password"}
-            label="رمز عبور"
-            icon={
-              <IconButton
-                icon={
-                  <Icon icon={`gridicons:${passwordVisible ? "not-visible" : "visible"}`} color="white" width="21" />
-                }
-                rippleColor="white"
-                onClick={(e) => togglePasswordVisible()}
-              />
-            }
-            value={values.password}
-            onChange={handleInputChange}
-          />
-          <Controls.Input
-            name="confirmPassword"
-            type={passwordVisible ? "text" : "password"}
-            label="تکرار رمز عبور"
-            value={values.confirmPassword}
-            onChange={handleInputChange}
-          />
-          <Controls.Checkbox
-            name="remindMe"
-            label="مرا به خاطر بسپار"
-            value={values.remindMe}
-            onToggleCheck={() => setValues((prevVal) => ({ ...prevVal, remindMe: !prevVal.remindMe }))}
-          />
-          <div className="flex flex-col gap-y-4">
-            <LinkButton text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
-            <Button
-              type="submit"
-              className={`${
-                mutation.isLoading ? "bg-green-500/30" : "bg-green-500 shadow-5"
-              } text-white !rounded-sm text-lg font-semibold h-11`}
-              text="ثبت نام"
-              {...(mutation.isLoading && { endIcon: <PuffLoader color="white" size={30} />, disabled: true })}
-              rippleColor="#e5e7eb"
-            />
+    <>
+      <ToastContainer />
+      <Modal setModal={setModal}>
+        <div className="flex flex-col gap-y-2">
+          <div className="flex justify-between items-center mb-2">
+            <h1 className="text-[1.3rem] font-semibold text-gray-800 dark:text-white">ثبت نام</h1>
+            <button onClick={() => setModal("")}>
+              <Icon icon="gridicons:cross" color="#DC2626" width={22} />
+            </button>
           </div>
-        </form>
-      </div>
-    </Modal>
+          <form className="flex flex-col gap-y-5 mt-3" autoComplete="off" onSubmit={handleSubmit}>
+            <Controls.Input
+              name="fullName"
+              label="نام و نام خانوادگی"
+              value={values.fullName}
+              onChange={handleInputChange}
+              error={errors.fullName}
+            />
+            <Controls.Input
+              name="email"
+              type="email"
+              label="ایمیل"
+              value={values.email}
+              onChange={handleInputChange}
+              error={errors.email}
+            />
+            <Controls.Input
+              name="password"
+              type={passwordVisible ? "text" : "password"}
+              label="رمز عبور"
+              icon={
+                <IconButton
+                  icon={
+                    <Icon icon={`gridicons:${passwordVisible ? "not-visible" : "visible"}`} color="white" width="21" />
+                  }
+                  rippleColor="white"
+                  onClick={(e) => togglePasswordVisible()}
+                />
+              }
+              value={values.password}
+              onChange={handleInputChange}
+            />
+            <Controls.Input
+              name="confirmPassword"
+              type={passwordVisible ? "text" : "password"}
+              label="تکرار رمز عبور"
+              value={values.confirmPassword}
+              onChange={handleInputChange}
+            />
+            <Controls.Checkbox
+              name="remindMe"
+              label="مرا به خاطر بسپار"
+              value={values.remindMe}
+              onToggleCheck={() => setValues((prevVal) => ({ ...prevVal, remindMe: !prevVal.remindMe }))}
+            />
+            <div className="flex flex-col gap-y-4">
+              <LinkButton text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
+              <Button
+                type="submit"
+                className={`${
+                  mutation.isLoading ? "bg-green-500/30" : "bg-green-500 shadow-5"
+                } text-white !rounded-sm text-lg font-semibold h-11`}
+                text="ثبت نام"
+                {...(mutation.isLoading && { endIcon: <PuffLoader color="white" size={30} />, disabled: true })}
+                rippleColor="#e5e7eb"
+              />
+            </div>
+          </form>
+        </div>
+      </Modal>
+    </>
   );
 }
