@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import Modal from "./Modal";
-import useForm from "./useForm";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Controls from "./controls/Controls";
 import { useToggle } from "react-use";
 import IconButton from "./buttons/IconButton";
@@ -17,38 +17,18 @@ interface FieldValuesType {
   remindMe: boolean;
 }
 
-const initialFValues = {
-  email: "",
-  password: "",
-  remindMe: false,
-};
-
 export default function SignInModal({ setModal }: SignInModalProps) {
   const [passwordVisible, togglePasswordVisible] = useToggle(false);
 
-  function validate(fieldValues: Partial<FieldValuesType> = values): boolean | void {
-    let temp = { ...errors };
+  const { control, handleSubmit } = useForm<FieldValuesType>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onTouched",
+  });
 
-    if (fieldValues.email) temp.email = /$^|.+@.+..+/.test(fieldValues.email) ? "" : "ایمیل وارد شده معتبر نمی‌باشد!";
-
-    setErrors({
-      ...temp,
-    });
-
-    if (fieldValues == values) {
-      return Object.values(temp).every((x) => x === "");
-    }
-  }
-
-  const { values, setValues, errors, setErrors, handleInputChange, resetForm } = useForm<FieldValuesType>(
-    initialFValues,
-    true,
-    validate
-  );
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit: SubmitHandler<FieldValuesType> = (values) => {
     console.log(values);
   };
 
@@ -61,37 +41,52 @@ export default function SignInModal({ setModal }: SignInModalProps) {
             <Icon icon="gridicons:cross" color="#DC2626" width={22} />
           </button>
         </div>
-        <form className="flex flex-col gap-y-5 mt-6" autoComplete="off" onSubmit={handleSubmit}>
-          <Controls.Input
+        <form className="flex flex-col gap-y-4 mt-6" autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+          <Controller
             name="email"
-            type="email"
-            label="ایمیل"
-            value={values.email}
-            onChange={handleInputChange}
-            error={errors.email}
+            control={control}
+            rules={{
+              required: "این فیلد الزامی است!",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "ایمیل وارد شده معتبر نمی‌باشد!",
+              },
+            }}
+            render={({ field, fieldState }) => <Controls.Input label="ایمیل" type="email" {...field} {...fieldState} />}
           />
-          <Controls.Input
+          <Controller
             name="password"
-            type={passwordVisible ? "text" : "password"}
-            label="رمز عبور"
-            icon={
-              <IconButton
+            control={control}
+            rules={{ required: "این فیلد الزامی است!" }}
+            render={({ field, fieldState }) => (
+              <Controls.Input
+                label="رمز عبور"
+                type={passwordVisible ? "text" : "password"}
                 icon={
-                  <Icon icon={`gridicons:${passwordVisible ? "not-visible" : "visible"}`} color="white" width="21" />
+                  <IconButton
+                    className="focus:bg-gray-100/20"
+                    icon={
+                      <Icon
+                        icon={`gridicons:${passwordVisible ? "not-visible" : "visible"}`}
+                        color="white"
+                        width="21"
+                      />
+                    }
+                    rippleColor="white"
+                    onClick={(e) => togglePasswordVisible()}
+                  />
                 }
-                rippleColor="white"
-                onClick={(e) => togglePasswordVisible()}
+                {...field}
+                {...fieldState}
               />
-            }
-            value={values.password}
-            onChange={handleInputChange}
+            )}
           />
-          <Controls.Checkbox
+          {/*<Controls.Checkbox
             name="remindMe"
             label="مرا به خاطر بسپار"
             value={values.remindMe}
             onToggleCheck={() => setValues((prevVal) => ({ ...prevVal, remindMe: !prevVal.remindMe }))}
-          />
+          /> */}
           <div className="flex flex-col gap-y-4">
             <LinkButton text="ثبت نام نکردم!" onClick={() => setModal("signup")} />
             <LinkButton text="رمز عبورم رو فراموش کردم." onClick={() => {}} />

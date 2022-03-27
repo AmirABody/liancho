@@ -1,18 +1,18 @@
 import { Icon } from "@iconify/react";
 import Modal from "./Modal";
-import useForm from "./useForm";
 import Controls from "./controls/Controls";
 import { useToggle } from "react-use";
 import IconButton from "./buttons/IconButton";
 import Button from "./buttons/Button";
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import LinkButton from "./buttons/LinkButton";
 import PuffLoader from "react-spinners/PuffLoader";
 
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { register } from "../pages/user-api";
+import { register as registerUser } from "../pages/user-api";
 import { User } from "../interfaces";
 import { toast, ToastContainer } from "./CustomToast";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 
 interface SignUpModalProps {
   setModal: (modal: string) => void;
@@ -26,18 +26,10 @@ interface FieldValuesType {
   remindMe: boolean;
 }
 
-const initialFValues = {
-  fullName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  remindMe: false,
-};
-
 export default function SignUpModal({ setModal }: SignUpModalProps) {
   const [passwordVisible, togglePasswordVisible] = useToggle(false);
 
-  const mutation = useMutation((user: User) => register(user));
+  const mutation = useMutation((user: User) => registerUser(user));
 
   useEffect(() => {
     if (mutation.isSuccess) toast({ type: "success", message: "ثبت نام با موفقیت انجام شد!" });
@@ -47,31 +39,18 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
     if (mutation.isError) toast({ type: "error", message: (mutation.error as Error).message });
   }, [mutation.isError]);
 
-  function validate(fieldValues: Partial<FieldValuesType> = values): boolean | void {
-    let temp = { ...errors };
+  const { control, handleSubmit } = useForm<FieldValuesType>({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    mode: "onTouched",
+  });
 
-    if (fieldValues.fullName) temp.fullName = fieldValues.fullName ? "" : "این فیلد اجباری است!";
-    if (fieldValues.email) temp.email = /$^|.+@.+..+/.test(fieldValues.email) ? "" : "ایمیل وارد شده معتبر نمی‌باشد!";
-
-    setErrors({
-      ...temp,
-    });
-
-    if (fieldValues == values) {
-      return Object.values(temp).every((x) => x === "");
-    }
-  }
-
-  const { values, setValues, errors, setErrors, handleInputChange, resetForm } = useForm<FieldValuesType>(
-    initialFValues,
-    true,
-    validate
-  );
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // console.log(values);
+  const onSubmit: SubmitHandler<FieldValuesType> = (values) => {
+    console.log(values);
 
     if (values.password !== values.confirmPassword) {
       toast({ type: "warning", message: "رمز عبورهای وارد شده تطابق ندارند!" });
@@ -82,7 +61,7 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
         password: values.password,
       };
 
-      mutation.mutate(userData);
+      // mutation.mutate(userData);
     }
   };
 
@@ -97,51 +76,75 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
               <Icon icon="gridicons:cross" color="#DC2626" width={22} />
             </button>
           </div>
-          <form className="flex flex-col gap-y-5 mt-3" autoComplete="off" onSubmit={handleSubmit}>
-            <Controls.Input
+          <form className="flex flex-col gap-y-4 mt-3" autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+            <Controller
               name="fullName"
-              label="نام و نام خانوادگی"
-              value={values.fullName}
-              onChange={handleInputChange}
-              error={errors.fullName}
+              control={control}
+              rules={{ required: "این فیلد الزامی است!" }}
+              render={({ field, fieldState }) => (
+                <Controls.Input label="نام و نام خانوادگی" {...field} {...fieldState} />
+              )}
             />
-            <Controls.Input
+            <Controller
               name="email"
-              type="email"
-              label="ایمیل"
-              value={values.email}
-              onChange={handleInputChange}
-              error={errors.email}
+              control={control}
+              rules={{
+                required: "این فیلد الزامی است!",
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: "ایمیل وارد شده معتبر نمی‌باشد!",
+                },
+              }}
+              render={({ field, fieldState }) => (
+                <Controls.Input label="ایمیل" type="email" {...field} {...fieldState} />
+              )}
             />
-            <Controls.Input
+            <Controller
               name="password"
-              type={passwordVisible ? "text" : "password"}
-              label="رمز عبور"
-              icon={
-                <IconButton
+              control={control}
+              rules={{ required: "این فیلد الزامی است!" }}
+              render={({ field, fieldState }) => (
+                <Controls.Input
+                  label="رمز عبور"
+                  type={passwordVisible ? "text" : "password"}
                   icon={
-                    <Icon icon={`gridicons:${passwordVisible ? "not-visible" : "visible"}`} color="white" width="21" />
+                    <IconButton
+                      className="focus:bg-gray-100/20"
+                      icon={
+                        <Icon
+                          icon={`gridicons:${passwordVisible ? "not-visible" : "visible"}`}
+                          color="white"
+                          width="21"
+                        />
+                      }
+                      rippleColor="white"
+                      onClick={(e) => togglePasswordVisible()}
+                    />
                   }
-                  rippleColor="white"
-                  onClick={(e) => togglePasswordVisible()}
+                  {...field}
+                  {...fieldState}
                 />
-              }
-              value={values.password}
-              onChange={handleInputChange}
+              )}
             />
-            <Controls.Input
+            <Controller
               name="confirmPassword"
-              type={passwordVisible ? "text" : "password"}
-              label="تکرار رمز عبور"
-              value={values.confirmPassword}
-              onChange={handleInputChange}
+              control={control}
+              rules={{ required: "این فیلد الزامی است!" }}
+              render={({ field, fieldState }) => (
+                <Controls.Input
+                  label="تکرار رمز عبور"
+                  type={passwordVisible ? "text" : "password"}
+                  {...field}
+                  {...fieldState}
+                />
+              )}
             />
-            <Controls.Checkbox
-              name="remindMe"
-              label="مرا به خاطر بسپار"
-              value={values.remindMe}
-              onToggleCheck={() => setValues((prevVal) => ({ ...prevVal, remindMe: !prevVal.remindMe }))}
-            />
+            {/* <Controls.Checkbox
+               name="remindMe"
+               label="مرا به خاطر بسپار"
+               value={values.remindMe}
+               onToggleCheck={() => setValues((prevVal) => ({ ...prevVal, remindMe: !prevVal.remindMe }))}
+             /> */}
             <div className="flex flex-col gap-y-4">
               <LinkButton text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
               <Button
