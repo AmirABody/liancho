@@ -24,6 +24,7 @@ export default function SignInModal({ setModal }: SignInModalProps) {
     defaultValues: {
       email: "",
       password: "",
+      remindMe: true,
     },
     mode: "onTouched",
   });
@@ -81,18 +82,17 @@ export default function SignInModal({ setModal }: SignInModalProps) {
               />
             )}
           />
-          {/*<Controls.Checkbox
+          <Controller
             name="remindMe"
-            label="مرا به خاطر بسپار"
-            value={values.remindMe}
-            onToggleCheck={() => setValues((prevVal) => ({ ...prevVal, remindMe: !prevVal.remindMe }))}
-          /> */}
+            control={control}
+            render={({ field }) => <Controls.Checkbox label="مرا به خاطر بسپار" {...field} />}
+          />
           <div className="flex flex-col gap-y-4">
             <LinkButton text="ثبت نام نکردم!" onClick={() => setModal("signup")} />
             <LinkButton text="رمز عبورم رو فراموش کردم." onClick={() => {}} />
             <Button
               type="submit"
-              className="bg-blue-500 text-white rounded-sm text-lg font-semibold h-11 shadow-6"
+              className="bg-blue-500 text-white !rounded-sm text-lg font-semibold h-11 shadow-6"
               text="ورود"
               rippleColor="#e5e7eb"
             />
