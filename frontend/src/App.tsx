@@ -3,6 +3,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Landing from "./pages/Landing";
 import { ReactQueryDevtools } from "react-query/devtools";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ function App() {
           <Router>
             <Routes>
               <Route path="/" element={<Landing />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </Router>
         </div>

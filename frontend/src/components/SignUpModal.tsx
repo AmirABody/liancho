@@ -4,15 +4,15 @@ import Controls from "./controls/Controls";
 import { useToggle } from "react-use";
 import IconButton from "./buttons/IconButton";
 import Button from "./buttons/Button";
-import { useEffect } from "react";
 import LinkButton from "./buttons/LinkButton";
 import PuffLoader from "react-spinners/PuffLoader";
 
-import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { register as registerUser } from "../pages/user-api";
 import { User } from "../interfaces";
 import { toast, ToastContainer } from "./CustomToast";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 interface SignUpModalProps {
   setModal: (modal: string) => void;
@@ -29,15 +29,22 @@ interface FieldValuesType {
 export default function SignUpModal({ setModal }: SignUpModalProps) {
   const [passwordVisible, togglePasswordVisible] = useToggle(false);
 
-  const mutation = useMutation((user: User) => registerUser(user));
+  let navigate = useNavigate();
 
-  useEffect(() => {
-    if (mutation.isSuccess) toast({ type: "success", message: "ثبت نام با موفقیت انجام شد!" });
-  }, [mutation.isSuccess]);
+  const mutation = useMutation((user: User) => registerUser(user), {
+    onError: (error, variables, context) => {
+      let message = (error as any).response.data.message.fr;
+      toast({ type: "error", message });
+    },
+    onSuccess: (data, variables, context) => {
+      toast({ type: "success", message: "ثبت نام با موفقیت انجام شد!" });
+      console.log(data);
 
-  useEffect(() => {
-    if (mutation.isError) toast({ type: "error", message: (mutation.error as Error).message });
-  }, [mutation.isError]);
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 1000)
+    }
+  });
 
   const { control, handleSubmit } = useForm<FieldValuesType>({
     defaultValues: {
@@ -51,8 +58,6 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
   });
 
   const onSubmit: SubmitHandler<FieldValuesType> = (values) => {
-    console.log(values);
-
     if (values.password !== values.confirmPassword) {
       toast({ type: "warning", message: "رمز عبورهای وارد شده تطابق ندارند!" });
     } else {
@@ -62,7 +67,7 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
         password: values.password,
       };
 
-      // mutation.mutate(userData);
+      mutation.mutate(userData);
     }
   };
 
@@ -143,11 +148,9 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
             <Controller
               name="remindMe"
               control={control}
-              render={({ field }) => (
-                <Controls.Checkbox label="مرا به خاطر بسپار" {...field} />
-              )}
+              render={({ field }) => <Controls.Checkbox label="مرا به خاطر بسپار" {...field} />}
             />
-            <div className="flex flex-col gap-y-4">
+            <div className="flex flex-col gap-y-4 -mt-2">
               <LinkButton text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
               <Button
                 type="submit"

@@ -2,6 +2,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
+const MyError = require("../errors/MyError");
+const ERRORS = require("../errors/ERRORS");
 
 const User = require("../models/userModel");
 
@@ -21,7 +23,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new MyError(ERRORS[1001]);
   }
 
   // Hash password
@@ -58,7 +60,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!user) {
     res.status(400);
-    throw new Error("User with the given email does not exist!");
+    throw new MyError(ERRORS[1002]);
   }
 
   if (await bcrypt.compare(password, user.password)) {
@@ -70,7 +72,7 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid Credentials");
+    throw new MyError(ERRORS[1003]);
   }
 });
 
