@@ -1,11 +1,13 @@
-// const mongoose = require("mongoose");
+const fs = require("fs/promises");
+const path = require("path");
 const bcrypt = require("bcryptjs");
+const Handlebars = require("handlebars");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const crypto = require("crypto");
 const MyError = require("../errors/MyError");
 const ERRORS = require("../errors/ERRORS");
-const sendEmail = require("../utils/email");
+const sendEmail = require("../utils/emails/email");
 
 const User = require("../models/userModel");
 const Token = require("../models/tokenModel");
@@ -56,7 +58,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const link = `${process.env.BASE_URL}/verify/${user._id}/${token.token}`;
 
   // Send verification email
-  await sendEmail(user.email, "LianCho Account Email Verification", link);
+  await sendEmail(user.email, "LianCho Account Email Verification", { text: link });
 
   res.status(201).send("An Email is sent to your account, please verify.");
 });
@@ -126,7 +128,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Send password reset link
+// @desc    Send password reset form
 // @route   POST /api/users/password-reset
 // @access  Public
 const sendPasswordReset = asyncHandler(async (req, res) => {
@@ -149,8 +151,11 @@ const sendPasswordReset = asyncHandler(async (req, res) => {
   // Password reset link
   const link = `${process.env.BASE_URL}/password-reset/${user._id}/${token.token}`;
 
+  // Create form using handlebars
+  const passwordResetForm = await createPasswordResetForm(link);
+
   // Send password reset email
-  await sendEmail(user.email, "LianCho Password Reset", link);
+  await sendEmail(user.email, "LianCho Password Reset", { html: passwordResetForm });
 
   res.status(200).send("Password reset email is sent successfully!");
 });
@@ -177,9 +182,20 @@ const resetPassword = asyncHandler(async (req, res) => {
     throw new Error("Invalid link or expired!");
   }
 
+  // Validate input password and confirm password
+  let { password, confirmPassword } = req.body;
+  if (!password || !confirmPassword) {
+    res.status(400);
+    return res.send("One of password fields is empty!");
+  }
+  if (password !== confirmPassword) {
+    res.status(400);
+    return res.send("Two input passwords were not equal!");
+  }
+
   // Hash password
   const salt = await bcrypt.genSalt(12);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
   // Update password
   user.password = hashedPassword;
@@ -201,6 +217,14 @@ const getMe = asyncHandler(async (req, res) => {
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+};
+
+const createPasswordResetForm = async (passwordResetLink) => {
+  let templatePath = path.join(__dirname, "..", "utils", "emails", "templates", "resetPassword.hbs");
+  return fs.readFile(templatePath).then((templateBuffer) => {
+    const template = Handlebars.compile(templateBuffer.toString(), "utf-8");
+    return template({ passwordResetLink });
+  });
 };
 
 module.exports = {

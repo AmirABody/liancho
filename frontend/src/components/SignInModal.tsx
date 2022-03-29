@@ -7,7 +7,7 @@ import IconButton from "./buttons/IconButton";
 import Button from "./buttons/Button";
 import LinkButton from "./buttons/LinkButton";
 import { useMutation } from "react-query";
-import { login as loginUser } from "../pages/user-api";
+import { login as loginUser, sendPasswordReset } from "../pages/user-api";
 import { toast, ToastContainer } from "./CustomToast";
 import { User } from "../interfaces";
 import { PuffLoader } from "react-spinners";
@@ -38,12 +38,22 @@ export default function SignInModal({ setModal }: SignInModalProps) {
       console.log(data);
 
       setTimeout(() => {
-        navigate('/dashboard')
+        navigate("/dashboard");
       }, 1000);
     },
   });
 
-  const { control, handleSubmit } = useForm<FieldValuesType>({
+  const resetPassMutation = useMutation((email: string) => sendPasswordReset(email), {
+    onError: (error, variables, context) => {
+      let message = (error as any).response.data.message.fr;
+      toast({ type: "error", message });
+    },
+    onSuccess: (data, variables, context) => {
+      toast({ type: "success", message: "لینک بازیابی رمز عبور به ایمیل ارسال شد." });
+    },
+  });
+
+  const { control, handleSubmit, getValues, trigger } = useForm<FieldValuesType>({
     defaultValues: {
       email: "",
       password: "",
@@ -59,6 +69,13 @@ export default function SignInModal({ setModal }: SignInModalProps) {
     };
 
     mutation.mutate(userData);
+  };
+
+  const handlePasswordReset = async () => {
+    if (await trigger("email", { shouldFocus: true })) {
+      const email = getValues("email");
+      resetPassMutation.mutate(email);
+    }
   };
 
   return (
@@ -120,9 +137,12 @@ export default function SignInModal({ setModal }: SignInModalProps) {
               render={({ field }) => <Controls.Checkbox label="مرا به خاطر بسپار" {...field} />}
             />
             <div className="flex flex-col gap-y-4 -mt-2">
-              <div className="inline-flex flex-col">
+              <div className="inline-flex flex-col items-end">
                 <LinkButton text="ثبت نام نکردم!" onClick={() => setModal("signup")} />
-                <LinkButton text="رمز عبورم رو فراموش کردم." onClick={() => {}} />
+                <div className="flex items-center w-fit gap-x-1">
+                  <LinkButton text="رمز عبورم رو فراموش کردم." onClick={() => handlePasswordReset()} />
+                  {resetPassMutation.isLoading && <PuffLoader color="white" size={30} />}
+                </div>
               </div>
               <Button
                 type="submit"

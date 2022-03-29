@@ -153,7 +153,7 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
               render={({ field }) => <Controls.Checkbox label="مرا به خاطر بسپار" {...field} />}
             />
             <div className="flex flex-col gap-y-4 -mt-2">
-              <LinkButton text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
+              <LinkButton className="self-end" text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
               <Button
                 type="submit"
                 className={`${

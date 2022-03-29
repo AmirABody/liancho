@@ -14,3 +14,9 @@ export const login = async (user: Pick<User, "email" | "password">) => {
 
   return res.data;
 };
+
+export const sendPasswordReset = async (email: string) => {
+  const res = await axios.post(API_URL + "password-reset", { email });
+
+  return res.data;
+};
