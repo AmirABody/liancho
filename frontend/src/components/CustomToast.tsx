@@ -80,7 +80,7 @@ export function ToastContainer(toastConfig: Partial<ToastConfig>) {
     limit: toastConfig.limit ?? 6,
     progressBar: toastConfig.progressBar ?? true,
     autoRemove: toastConfig.autoRemove ?? true,
-    autoRemoveTime: toastConfig.autoRemoveTime ?? 3000, // in milliseconds
+    autoRemoveTime: toastConfig.autoRemoveTime ?? 5000, // in milliseconds
     position: toastConfig.position ?? "top-right",
   };
 
