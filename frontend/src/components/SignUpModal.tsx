@@ -37,13 +37,15 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
       toast({ type: "error", message });
     },
     onSuccess: (data, variables, context) => {
-      toast({ type: "success", message: "ثبت نام با موفقیت انجام شد!" });
-      console.log(data);
+      toast({
+        type: "success",
+        message: "ثبت نام با موفقیت انجام شد، پس از تأیید ایمیل ارسالی به حساب خود وارد شوید.",
+      });
 
-      setTimeout(() => {
-        navigate('/dashboard')
-      }, 1000)
-    }
+      // setTimeout(() => {
+      //   navigate('/dashboard')
+      // }, 1000)
+    },
   });
 
   const { control, handleSubmit } = useForm<FieldValuesType>({

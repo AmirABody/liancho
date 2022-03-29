@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
-const {
-  validateEmail,
-  checkPasswordStrength,
-} = require("./validators/validators");
+const { validateEmail } = require("./validators/validators");
 
 const userSchema = mongoose.Schema(
   {
@@ -23,6 +20,10 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

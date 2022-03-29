@@ -2,10 +2,42 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
+const crypto = require("crypto");
 const MyError = require("../errors/MyError");
 const ERRORS = require("../errors/ERRORS");
+const sendEmail = require("../utils/email");
 
 const User = require("../models/userModel");
+const Token = require("../models/tokenModel");
+
+// @desc    ٰVerify user email
+// @route   POST /api/users/verify/:id/:token
+// @access  Public
+const verifyUser = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ _id: req.params.id });
+
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid link");
+  }
+
+  const token = await Token.findOne({
+    userId: user._id,
+    token: req.params.token,
+    usage: "email-verification",
+  });
+
+  if (!token) {
+    res.status(400);
+    throw new Error("Invalid link");
+  }
+
+  await User.updateOne({ _id: user._id, verified: true });
+
+  await Token.findByIdAndRemove(token._id);
+
+  res.status(200).send("Email verified successfully");
+});
 
 // @desc    Register new user
 // @route   POST /api/users
@@ -37,17 +69,25 @@ const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
   });
 
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      fullName: user.fullName,
-      email: user.email,
-      token: generateToken(user._id),
-    });
-  } else {
+  if (!user) {
     res.status(400);
     throw new Error("Invalid user data");
   }
+
+  // Create token for email verification
+  const token = await Token.create({
+    userId: user._id,
+    token: crypto.randomBytes(32).toString("hex"),
+    usage: "email-verification",
+  });
+
+  // Email verification link
+  const link = `${process.env.BASE_URL}/verify/${user._id}/${token.token}`;
+
+  // Send verification email
+  await sendEmail(user.email, "LianCho Account Email Verification", link);
+
+  res.status(201).send("An Email is sent to your account, please verify.");
 });
 
 // @desc    Authenticate a user
@@ -61,6 +101,11 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!user) {
     res.status(400);
     throw new MyError(ERRORS[1002]);
+  }
+
+  if (!user.verified) {
+    res.status(401);
+    throw new MyError(ERRORS[1004]);
   }
 
   if (await bcrypt.compare(password, user.password)) {
@@ -89,6 +134,7 @@ const generateToken = (id) => {
 };
 
 module.exports = {
+  verifyUser,
   registerUser,
   loginUser,
   getMe,
