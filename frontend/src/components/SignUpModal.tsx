@@ -8,7 +8,7 @@ import LinkButton from "./buttons/LinkButton";
 import PuffLoader from "react-spinners/PuffLoader";
 
 import { useMutation } from "react-query";
-import { register as registerUser } from "../pages/user-api";
+import { register as registerUser } from "../pages/user-api/api";
 import { User } from "../interfaces";
 import { toast, ToastContainer } from "./CustomToast";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -23,13 +23,13 @@ interface FieldValuesType {
   email: string;
   password: string;
   confirmPassword: string;
-  remindMe: boolean;
+  // remindMe: boolean;
 }
 
 export default function SignUpModal({ setModal }: SignUpModalProps) {
   const [passwordVisible, togglePasswordVisible] = useToggle(false);
 
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
 
   const mutation = useMutation((user: User) => registerUser(user), {
     onError: (error, variables, context) => {
@@ -54,7 +54,7 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
       email: "",
       password: "",
       confirmPassword: "",
-      remindMe: true,
+      // remindMe: true,
     },
     mode: "onTouched",
   });
@@ -147,11 +147,11 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
                 />
               )}
             />
-            <Controller
+            {/* <Controller
               name="remindMe"
               control={control}
               render={({ field }) => <Controls.Checkbox label="مرا به خاطر بسپار" {...field} />}
-            />
+            /> */}
             <div className="flex flex-col gap-y-4 -mt-2">
               <LinkButton className="self-end" text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
               <Button

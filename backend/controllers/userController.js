@@ -101,7 +101,7 @@ const verifyUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, remindMe } = req.body;
 
   const user = await User.findOne({ email });
 
@@ -116,16 +116,32 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   if (await bcrypt.compare(password, user.password)) {
+    // if remindMe === true, then token and cookie will expire after 1 year
+    // otherwise token will last for 1 day and cookie will become a session cookie
+    const token = generateToken(user._id, remindMe ? "365d" : "1d");
+
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: true,
+      ...(remindMe && { maxAge: 365 * 24 * 60 * 60 }),
+    });
     res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
-      token: generateToken(user._id),
     });
   } else {
     res.status(400);
     throw new MyError(ERRORS[1003]);
   }
+});
+
+// @desc    Logout a user
+// @route   POST /api/users/logout
+// @access  Private
+const logoutUser = asyncHandler(async (req, res) => {
+  res.clearCookie("access_token").status(200).json({ message: "Successfully logged out!" });
 });
 
 // @desc    Send password reset form
@@ -215,8 +231,8 @@ const getMe = asyncHandler(async (req, res) => {
 });
 
 // Generate JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+const generateToken = (id, expiresIn) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn });
 };
 
 const createPasswordResetForm = async (passwordResetLink) => {
@@ -231,6 +247,7 @@ module.exports = {
   registerUser,
   verifyUser,
   loginUser,
+  logoutUser,
   sendPasswordReset,
   resetPassword,
   getMe,

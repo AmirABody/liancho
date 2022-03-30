@@ -1,7 +1,13 @@
 import axios from "axios";
-import { User } from "../interfaces";
+import { User } from "../../interfaces";
 
 const API_URL = "/api/users/";
+
+export const getMe = async () => {
+  const res = await axios.get(API_URL + "me");
+
+  return res.data;
+};
 
 export const register = async (user: User) => {
   const res = await axios.post(API_URL, user);

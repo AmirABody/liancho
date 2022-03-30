@@ -7,7 +7,7 @@ import IconButton from "./buttons/IconButton";
 import Button from "./buttons/Button";
 import LinkButton from "./buttons/LinkButton";
 import { useMutation } from "react-query";
-import { login as loginUser, sendPasswordReset } from "../pages/user-api";
+import { login as loginUser, sendPasswordReset } from "../pages/user-api/api";
 import { toast, ToastContainer } from "./CustomToast";
 import { User } from "../interfaces";
 import { PuffLoader } from "react-spinners";
@@ -35,7 +35,6 @@ export default function SignInModal({ setModal }: SignInModalProps) {
     },
     onSuccess: (data, variables, context) => {
       toast({ type: "success", message: "ورود با موفقیت انجام شد!" });
-      console.log(data);
 
       setTimeout(() => {
         navigate("/dashboard");
@@ -66,7 +65,8 @@ export default function SignInModal({ setModal }: SignInModalProps) {
     const userData = {
       email: values.email,
       password: values.password,
-    };
+      remindMe: values.remindMe,
+    };  
 
     mutation.mutate(userData);
   };

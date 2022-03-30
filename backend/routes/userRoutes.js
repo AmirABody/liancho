@@ -7,11 +7,13 @@ const {
   getMe,
   sendPasswordReset,
   resetPassword,
+  logoutUser,
 } = require("../controllers/userController");
 const { protect } = require("../middlewares/authMiddleware");
 
 router.post("/", registerUser);
 router.post("/login", loginUser);
+router.get("/logout", protect, logoutUser);
 router.get("/me", protect, getMe);
 router.get("/verify/:userId/:token", verifyUser);
 router.post("/password-reset", sendPasswordReset);
