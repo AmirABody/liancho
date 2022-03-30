@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import Landing from "./pages/Landing";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Loading from "./components/Loading";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -15,7 +18,16 @@ function App() {
           <Router>
             <Routes>
               <Route path="/" element={<Landing />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/loading" element={<Loading />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
         </div>

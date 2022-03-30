@@ -9,7 +9,7 @@ function RawLogo({ width = 70, offsetX = 8, shadow = true, selfBlur = false }: R
   const colors = ["#22C55E", "#DC2626", "#3B82F6"];
   const geoParams = {
     radius: 9,
-    offsetX: 8,
+    offsetX,
     get width() {
       let n = colors.length;
       return this.radius * n * 2 + this.offsetX * (n - 1);
