@@ -3,17 +3,8 @@ import { User } from "../../interfaces";
 
 const API_URL = "/api/users/";
 
-// returns the cookie with the given name,
-// or undefined if not found
-function getCookie(name: string) {
-  let matches = document.cookie.match(
-    new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)")
-  );
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
 export const getMe = async () => {
-  let res = getCookie("liancho_has_token") ? await axios.get(API_URL + "me") : { data: null };
+  let res = await axios.get(API_URL + "me");
 
   return res.data;
 };

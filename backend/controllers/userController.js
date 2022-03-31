@@ -120,16 +120,12 @@ const loginUser = asyncHandler(async (req, res) => {
     // otherwise token will last for 1 day and cookie will become a session cookie
     const token = generateToken(user._id, remindMe ? "365d" : "1d");
 
-    res
-      .cookie("liancho_access_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        ...(remindMe && { maxAge: 365 * 24 * 60 * 60 }),
-      })
-      .cookie("liancho_has_token", true, {
-        ...(remindMe && { maxAge: 365 * 24 * 60 * 60 }),
-      });
+    res.cookie("liancho_access_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      ...(remindMe && { maxAge: 365 * 24 * 60 * 60 }),
+    });
     res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
@@ -145,11 +141,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/logout
 // @access  Private
 const logoutUser = asyncHandler(async (req, res) => {
-  res
-    .clearCookie("liancho_access_token")
-    .clearCookie("liancho_has_token")
-    .status(200)
-    .json({ message: "Successfully logged out!" });
+  res.clearCookie("liancho_access_token").status(200).json({ message: "Successfully logged out!" });
 });
 
 // @desc    Send password reset form
