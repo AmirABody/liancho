@@ -5,10 +5,10 @@ const User = require("../models/userModel");
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  if (req.cookies.access_token) {
+  if (req.cookies["liancho_access_token"]) {
     try {
       // Get token from cookies
-      token = req.cookies.access_token;
+      token = req.cookies["liancho_access_token"];
 
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
