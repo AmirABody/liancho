@@ -26,3 +26,9 @@ export const sendPasswordReset = async (email: string) => {
 
   return res.data;
 };
+
+export const logout = async () => {
+  const res = await axios.get(API_URL + "logout");
+
+  return res.data;
+}

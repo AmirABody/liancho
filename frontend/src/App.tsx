@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider, setLogger } from "react-query";
 import Landing from "./pages/Landing";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Dashboard from "./pages/Dashboard";
@@ -9,6 +9,12 @@ import Loading from "./components/Loading";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+setLogger({
+  log: () => {},
+  warn: () => {},
+  error: () => {},
+});
 
 function App() {
   return (
@@ -26,7 +32,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/loading" element={<Loading />} />
+              {/* <Route path="/loading" element={<Loading />} /> */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>

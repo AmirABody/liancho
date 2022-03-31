@@ -3,12 +3,13 @@ import Logo from "../components/Logo";
 import { Icon } from "@iconify/react";
 import Button from "./buttons/Button";
 import { ThemeContext } from "../contexts/ThemeContext";
-import { useAuth } from "../pages/user-api/hooks-api";
 import { Link } from "react-router-dom";
 
-export default function Header() {
-  const { user } = useAuth();
+interface HeaderProps {
+  isAuth: boolean;
+}
 
+export default function Header({ isAuth }: HeaderProps) {
   const { theme, setTheme } = useContext(ThemeContext)!;
 
   const toggleTheme = () => {
@@ -32,7 +33,7 @@ export default function Header() {
             }
             onClick={toggleTheme}
           />
-          {user && (
+          {isAuth && (
             <Link to="/dashboard">
               <div className="flex items-center bg-blue-600/60 hover:bg-blue-600/80 dark:bg-blue-400/80 dark:hover:bg-blue-400/60 p-[1px] rounded-full cursor-pointer transition-all">
                 <Icon icon="carbon:user-avatar-filled-alt" color="white" width={34} />
