@@ -13,12 +13,7 @@ function getCookie(name: string) {
 }
 
 export const getMe = async () => {
-  let res;
-  if (getCookie("liancho_has_token")) {
-    res = await axios.get(API_URL + "me");
-  } else {
-    res = { data: null };
-  }
+  let res = getCookie("liancho_has_token") ? await axios.get(API_URL + "me") : { data: null };
 
   return res.data;
 };
