@@ -1,11 +1,11 @@
-import Header from "../components/Header";
+import Header from "../components/home/Header";
 import Button from "../components/buttons/Button";
 import { Icon } from "@iconify/react";
 import RawLogo from "../components/RawLogo";
-import Slider from "../components/Slider";
-import SignUpModal from "../components/SignUpModal";
+import Slider from "../components/home/Slider";
+import SignUpModal from "../components/home/SignUpModal";
 import { useState } from "react";
-import SignInModal from "../components/SignInModal";
+import SignInModal from "../components/home/SignInModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, useLogOut } from "./user-api/hooks-api";
 

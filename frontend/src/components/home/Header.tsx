@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import Logo from "../components/Logo";
+import Logo from "../Logo";
 import { Icon } from "@iconify/react";
-import Button from "./buttons/Button";
-import { ThemeContext } from "../contexts/ThemeContext";
+import Button from "../buttons/Button";
+import { ThemeContext } from "../../contexts/ThemeContext";
 import { Link } from "react-router-dom";
 
 interface HeaderProps {

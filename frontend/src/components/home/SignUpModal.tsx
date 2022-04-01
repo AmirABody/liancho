@@ -1,16 +1,16 @@
 import { Icon } from "@iconify/react";
-import Modal from "./Modal";
-import Controls from "./controls/Controls";
+import Modal from "../Modal";
+import Controls from "../controls/Controls";
 import { useToggle } from "react-use";
-import IconButton from "./buttons/IconButton";
-import Button from "./buttons/Button";
-import LinkButton from "./buttons/LinkButton";
+import IconButton from "../buttons/IconButton";
+import Button from "../buttons/Button";
+import LinkButton from "../buttons/LinkButton";
 import PuffLoader from "react-spinners/PuffLoader";
 
 import { useMutation } from "react-query";
-import { register as registerUser } from "../pages/user-api/api";
-import { User } from "../interfaces";
-import { toast, ToastContainer } from "./CustomToast";
+import { register as registerUser } from "../../pages/user-api/api";
+import { User } from "../../interfaces";
+import { toast, ToastContainer } from "../CustomToast";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 

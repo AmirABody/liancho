@@ -1,5 +1,5 @@
 import Typewriter from "typewriter-effect";
-import Header from "../components/Header";
+import Header from "../components/home/Header";
 import { useAuth } from "./user-api/hooks-api";
 
 export default function NotFound() {

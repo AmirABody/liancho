@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { QueryClient, QueryClientProvider, setLogger } from "react-query";
-import Landing from "./pages/Landing";
+import Landing from "./pages/Home";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
