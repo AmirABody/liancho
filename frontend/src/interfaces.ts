@@ -9,3 +9,5 @@ export interface Toast {
   type: "info" | "success" | "warning" | "error";
   message: string;
 }
+
+export type DashboardTab = "overview" | "tasks" | "reports" | "infography";
