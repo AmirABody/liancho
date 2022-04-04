@@ -14,6 +14,7 @@ const taskSchema = mongoose.Schema(
     },
     title: { type: String, required: true },
     category: { type: String, required: true },
+    dueDate: { type: Date, required: true },
     reminder: { type: Boolean, required: true },
     time: { type: Number, default: 0 },
   },
