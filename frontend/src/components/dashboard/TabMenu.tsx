@@ -10,7 +10,7 @@ interface TabMenuProps {
 export default function TabMenu({ openTab, children, onChange }: TabMenuProps) {
   return (
     <div className="flex flex-col gap-y-1">
-      {React.Children.map(children, (child: ReactElement) =>
+      {React.Children.map(children, (child) =>
         React.cloneElement(child, {
           selected: openTab === child.props.id,
           onChange,

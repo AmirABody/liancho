@@ -13,6 +13,7 @@ module.exports = {
         5: "0 0 10px 0 rgba(34, 197, 94, 0.5)",
         6: "0 0 10px 0 rgba(59, 130, 246, 0.5)",
         7: "0 0 20px 0 rgba(0, 0, 0, 0.15)",
+        8: "0 4px 20px 0 rgba(0, 0, 0, 0.02)",
       },
       keyframes: {
         ripple: {
