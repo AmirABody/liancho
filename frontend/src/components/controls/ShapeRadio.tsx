@@ -22,10 +22,10 @@ export default React.forwardRef<HTMLInputElement, ShapeRadioProps>(function Shap
             {selected && (
               <motion.span
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.2 }}
+                animate={{ opacity: 0.4 }}
                 exit={{ opacity: 0 }}
-                className="absolute w-12 -top-1 -right-1 aspect-square opacity-20 rounded-full"
-                style={{ backgroundColor: color }}
+                className="absolute w-12 -top-1 -right-1 aspect-square border-2 rounded-full"
+                style={{ borderColor: color }}
               />
             )}
           </AnimatePresence>

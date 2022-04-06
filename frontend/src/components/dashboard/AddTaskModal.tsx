@@ -7,6 +7,7 @@ import ShapeRadio from "../controls/ShapeRadio";
 import RadioGroup from "../controls/RadioGroup";
 import Modal from "../Modal";
 import Tooltip from "../Tooltip";
+import Button from "../buttons/Button";
 
 interface AddTaskModalProps {
   setModal: (modal: string) => void;
@@ -66,9 +67,20 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
             render={({ field, fieldState }) => <Controls.Input label="عنوان تکلیف" {...field} {...fieldState} />}
           />
           <Controller
+            name="dueDate"
+            control={control}
+            render={({ field }) => <Controls.CustomDatePicker label="موعد تکلیف:" {...field} />}
+          />
+          <Controller
             name="reminder"
             control={control}
             render={({ field }) => <Controls.Checkbox label="یادآور" {...field} />}
+          />
+          <Button
+            type="submit"
+            className="text-white !rounded-sm text-lg font-semibold h-11 bg-blue-500 shadow-6"
+            text="افزودن"
+            rippleColor="#e5e7eb"
           />
         </form>
       </div>

@@ -10,7 +10,7 @@ interface InputProps {
   onBlur: (e: React.FormEvent<HTMLInputElement>) => void;
   icon?: React.ReactNode | null;
   error?: FieldError | null;
-  invalid: boolean;
+  invalid?: boolean;
 }
 
 export default React.forwardRef<HTMLInputElement, InputProps>(function Input(
