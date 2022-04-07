@@ -1,9 +1,14 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "react-query";
+import { PuffLoader } from "react-spinners";
 import { Category, CategoryColors } from "../../interfaces";
+import { setCat } from "../../pages/cat-api/api";
+import { useCats } from "../../pages/cat-api/hooks-api";
 import Button from "../buttons/Button";
 import Controls from "../controls/Controls";
 import RadioGroup from "../controls/RadioGroup";
 import ShapeRadio from "../controls/ShapeRadio";
+import { toast, ToastContainer } from "../CustomToast";
 import Modal from "../Modal";
 
 interface CategoryPanelProps {
@@ -13,16 +18,32 @@ interface CategoryPanelProps {
 type FieldValuesType = Exclude<Category, "id">;
 
 export default function CategoryPanel({ togglePanel }: CategoryPanelProps) {
+  const queryClient = useQueryClient();
+
+  const { cats } = useCats();
+
+  const mutation = useMutation((cat: Category) => setCat(cat), {
+    onError: (error, variables, context) => {
+      let message = (error as any).response.data.message.fr;
+      toast({ type: "error", message });
+    },
+    onSuccess: (data, variables, context) => {
+      toast({ type: "success", message: "دسته بندی با موفقیت ساخته شد!" });
+      queryClient.resetQueries("cats");
+      togglePanel(false);
+    },
+  });
+
   const { control, handleSubmit } = useForm<FieldValuesType>({
     defaultValues: {
-      color: CategoryColors.AMBER_500,
+      color: undefined,
       title: "",
     },
     mode: "onTouched",
   });
 
   const onSubmit: SubmitHandler<FieldValuesType> = (values) => {
-    console.log(values);
+    mutation.mutate(values);
   };
 
   return (
@@ -36,11 +57,13 @@ export default function CategoryPanel({ togglePanel }: CategoryPanelProps) {
         <Controller
           name="color"
           control={control}
-          render={({ field }) => (
-            <RadioGroup {...field} label="رنگ دسته:">
-              {Object.values(CategoryColors).map((color: string) => (
-                <ShapeRadio key={color} value={color} color={color} width={28} />
-              ))}
+          rules={{ required: "این فیلد الزامی است!" }}
+          render={({ field, fieldState }) => (
+            <RadioGroup {...field} {...fieldState} label="رنگ دسته:">
+              {Object.values(CategoryColors).map((color: string) => {
+                const isUsed = cats.some((cat: Category) => cat.color === color);
+                return <ShapeRadio key={color} value={color} color={color} width={28} disabled={isUsed} />;
+              })}
             </RadioGroup>
           )}
         />
@@ -55,8 +78,11 @@ export default function CategoryPanel({ togglePanel }: CategoryPanelProps) {
         <div className="flex items-center gap-x-2">
           <Button
             type="submit"
-            className="flex-grow text-white !rounded-sm text-lg font-semibold h-11 bg-green-500 shadow-5"
+            className={`flex-grow text-white !rounded-sm text-lg font-semibold h-11 ${
+              mutation.isLoading ? "bg-green-700" : "bg-green-500 shadow-5"
+            }`}
             text="افزودن دسته"
+            {...(mutation.isLoading && { endIcon: <PuffLoader color="white" size={30} />, disabled: true })}
             rippleColor="#e5e7eb"
           />
           <Button

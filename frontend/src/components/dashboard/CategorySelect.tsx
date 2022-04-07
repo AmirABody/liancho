@@ -5,7 +5,6 @@ import { Category } from "../../interfaces";
 import { FieldError } from "react-hook-form";
 import { Icon } from "@iconify/react";
 import Tooltip from "../Tooltip";
-import CategoryPanel from "../dashboard/CategoryPanel";
 
 interface SelectProps {
   name: string;
@@ -15,6 +14,7 @@ interface SelectProps {
   togglePanel: (state?: boolean) => void;
   error?: FieldError | null;
   onChange: (option: SingleValue<Category> | MultiValue<Category>, actionMeta: ActionMeta<Category>) => void;
+  isLoading: boolean;
 }
 
 const dot = (color = "transparent") => ({
@@ -57,9 +57,9 @@ const customStyles: StylesConfig<Category> = {
       backgroundColor: isDisabled
         ? undefined
         : isSelected
-        ? color.alpha(0.25).css()
+        ? color.alpha(0.15).css()
         : isFocused
-        ? color.alpha(0.1).css()
+        ? color.alpha(0.05).css()
         : undefined,
       color: isDisabled ? "#ccc" : data.color,
       ...dot(data.color),
@@ -81,7 +81,7 @@ const customStyles: StylesConfig<Category> = {
 };
 
 export default React.forwardRef<any, SelectProps>(function CategorySelect(
-  { name, label, value, options, error = null, onChange, togglePanel },
+  { name, label, value, options, error = null, onChange, togglePanel, isLoading },
   ref
 ) {
   return (
@@ -92,9 +92,11 @@ export default React.forwardRef<any, SelectProps>(function CategorySelect(
           <div className="flex items-center gap-x-3">
             <Select
               name={name}
-              value={value}
               placeholder="انتخاب کنید"
-              getOptionValue={({ id }) => id}
+              value={value}
+              isLoading={isLoading}
+              noOptionsMessage={() => "دسته بندی‌ای وجود ندارد!"}
+              getOptionValue={({ _id }) => _id}
               getOptionLabel={({ title }) => title}
               onChange={onChange}
               styles={customStyles}

@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 import React, { useContext, useState } from "react";
 import IconButton from "../components/buttons/IconButton";
+import { ToastContainer } from "../components/CustomToast";
 import AddTaskModal from "../components/dashboard/AddTaskModal";
 import Avatar from "../components/dashboard/Avatar";
 import HeaderSection from "../components/dashboard/HeaderSection";
@@ -26,6 +27,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <ToastContainer />
       <div className="grid grid-cols-12 gap-x-5 bg-gray-100">
         <aside className="bg-gray-50 border border-gray-200 col-span-2 h-screen relative">
           <div className="w-[344px] h-[309px] bg-gray-200 opacity-60 rounded-full absolute -z-0 top-5 -right-10 translate-x-1/2 -translate-y-1/2" />

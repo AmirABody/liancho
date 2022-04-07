@@ -24,7 +24,7 @@ export enum CategoryColors {
 }
 
 export interface Category {
-  id: string;
+  _id: string;
   color: CategoryColors;
   title: string;
 }

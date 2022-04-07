@@ -9,32 +9,17 @@ import Tooltip from "../Tooltip";
 import Button from "../buttons/Button";
 import { useToggle } from "react-use";
 import CategoryPanel from "./CategoryPanel";
+import { useCats } from "../../pages/cat-api/hooks-api";
 
 interface AddTaskModalProps {
   setModal: (modal: string) => void;
 }
 
-const categoryOptions: Category[] = [
-  // {
-  //   id: "1",
-  //   color: CategoryColors.AMBER_500,
-  //   title: "کار",
-  // },
-  // {
-  //   id: "2",
-  //   color: CategoryColors.ORANGE_500,
-  //   title: "تفریح",
-  // },
-  // {
-  //   id: "3",
-  //   color: CategoryColors.PURPLE_500,
-  //   title: "پروژه شخصی",
-  // },
-];
-
 type FieldValuesType = Exclude<Task, "time">;
 
 export default function AddTaskModal({ setModal }: AddTaskModalProps) {
+  const {cats, isLoading, isSuccess, error} = useCats();
+
   const [categoryPanel, toggleCategoryPanel] = useToggle(false);
 
   const { control, handleSubmit } = useForm<FieldValuesType>({
@@ -96,7 +81,8 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
             render={({ field, fieldState }) => (
               <Controls.CategorySelect
                 label="دسته‌بندی:"
-                options={categoryOptions}
+                options={cats}
+                isLoading={isLoading}
                 togglePanel={toggleCategoryPanel}
                 {...field}
                 {...fieldState}

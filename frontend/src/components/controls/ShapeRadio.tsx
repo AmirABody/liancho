@@ -7,20 +7,29 @@ interface ShapeRadioProps {
   color: string;
   width: number;
   selected?: boolean;
+  disabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default React.forwardRef<HTMLInputElement, ShapeRadioProps>(function ShapeRadio(
-  { name, value, color, width, selected, onChange },
+  { name, value, color, width, selected, disabled = false, onChange },
   ref
 ) {
   return (
     <div>
-      <label className="cursor-pointer">
-        <input className="hidden absolute" name={name} type="radio" value={value} onChange={onChange} ref={ref} />
+      <label className={`${disabled ? '' : 'cursor-pointer'}`}>
+        <input
+          className="hidden absolute"
+          name={name}
+          type="radio"
+          value={value}
+          onChange={onChange}
+          ref={ref}
+          disabled={disabled}
+        />
         <span
           className="relative block aspect-square rounded-full"
-          style={{ backgroundColor: color, width: `${width}px` }}
+          style={{ backgroundColor: color, width: `${width}px`, opacity: disabled ? 0.2 : 1 }}
         >
           <AnimatePresence>
             {selected && (
