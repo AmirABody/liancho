@@ -30,6 +30,7 @@ export interface Category {
 }
 
 export interface Task {
+  _id?: string;
   priority: Priority;
   title: string;
   category: Category;

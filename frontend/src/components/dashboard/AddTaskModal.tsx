@@ -10,6 +10,10 @@ import Button from "../buttons/Button";
 import { useToggle } from "react-use";
 import CategoryPanel from "./CategoryPanel";
 import { useCats } from "../../pages/cat-api/hooks-api";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { setTask } from "../../pages/task-api/api";
+import { toast } from "../CustomToast";
+import { PuffLoader } from "react-spinners";
 
 interface AddTaskModalProps {
   setModal: (modal: string) => void;
@@ -18,7 +22,21 @@ interface AddTaskModalProps {
 type FieldValuesType = Exclude<Task, "time">;
 
 export default function AddTaskModal({ setModal }: AddTaskModalProps) {
-  const {cats, isLoading, isSuccess, error} = useCats();
+  const queryClient = useQueryClient();
+
+  const { cats, isLoading, isSuccess, error } = useCats();
+
+  const mutation = useMutation((task: Task) => setTask(task), {
+    onError: (error, variables, context) => {
+      let message = (error as any).response.data.message.fr;
+      toast({ type: "error", message });
+    },
+    onSuccess: (data, variables, context) => {
+      toast({ type: "success", message: "تکلیف با موفقیت ساخته شد!" });
+      queryClient.resetQueries("tasks");
+      setModal("");
+    },
+  });
 
   const [categoryPanel, toggleCategoryPanel] = useToggle(false);
 
@@ -34,7 +52,15 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
   });
 
   const onSubmit: SubmitHandler<FieldValuesType> = (values) => {
-    console.log(values);
+    const taskData = {
+      priority: values.priority,
+      title: values.title,
+      category: values.category,
+      dueDate: values.dueDate,
+      reminder: values.reminder,
+      time: 0,
+    };
+    mutation.mutate(taskData)
   };
 
   return (
@@ -101,8 +127,9 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
           />
           <Button
             type="submit"
-            className="text-white !rounded-sm text-lg font-semibold h-11 bg-blue-500 shadow-6"
+            className={`text-white !rounded-sm text-lg font-semibold h-11 ${mutation.isLoading ? 'bg-blue-700' : 'bg-blue-500 shadow-6'}`}
             text="افزودن"
+            {...(mutation.isLoading && { endIcon: <PuffLoader color="white" size={30} />, disabled: true })}
             rippleColor="#e5e7eb"
           />
         </form>

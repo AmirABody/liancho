@@ -8,3 +8,9 @@ export const getTasks = async () => {
 
   return res.data;
 };
+
+export const setTask = async (task: Task) => {
+  const res = await axios.post(API_URL, task);
+
+  return res.data;
+}
