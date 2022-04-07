@@ -13,7 +13,11 @@ const taskSchema = mongoose.Schema(
       required: true,
     },
     title: { type: String, required: true },
-    category: { type: String, required: true },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Category",
+    },
     dueDate: { type: Date, required: true },
     reminder: { type: Boolean, required: true },
     time: { type: Number, default: 0 },
