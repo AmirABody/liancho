@@ -7,7 +7,7 @@ const Task = require("../models/taskModel");
 // @route   GET /api/tasks
 // @access  Private
 const getTasks = asyncHandler(async (req, res) => {
-  const tasks = await Task.find({ userId: req.user.id });
+  const tasks = await Task.find({ userId: req.user.id }).populate('category');
 
   res.status(200).json(tasks);
 });
