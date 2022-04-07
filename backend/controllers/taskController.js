@@ -7,7 +7,7 @@ const Task = require("../models/taskModel");
 // @route   GET /api/tasks
 // @access  Private
 const getTasks = asyncHandler(async (req, res) => {
-  const tasks = await Task.find({ userId: req.user.id }).populate('category');
+  const tasks = await Task.find({ userId: req.user.id }).populate("category");
 
   res.status(200).json(tasks);
 });
@@ -19,7 +19,7 @@ const setTask = asyncHandler(async (req, res) => {
   let task;
 
   try {
-    task = await Task.create({ userId: req.user.id, ...req.body });
+    task = await Task.create({ userId: req.user.id, ...req.body, category: req.body.category._id });
   } catch (error) {
     res.status(400);
     throw error;
@@ -34,8 +34,7 @@ const setTask = asyncHandler(async (req, res) => {
 const updateTask = asyncHandler(async (req, res) => {
   let task;
 
-  if (mongoose.Types.ObjectId.isValid(req.params.id))
-    task = await Task.findById(req.params.id);
+  if (mongoose.Types.ObjectId.isValid(req.params.id)) task = await Task.findById(req.params.id);
 
   if (!task) {
     res.status(400);
@@ -69,8 +68,7 @@ const updateTask = asyncHandler(async (req, res) => {
 const deleteTask = asyncHandler(async (req, res) => {
   let task;
 
-  if (mongoose.Types.ObjectId.isValid(req.params.id))
-    task = await Task.findById(req.params.id);
+  if (mongoose.Types.ObjectId.isValid(req.params.id)) task = await Task.findById(req.params.id);
 
   if (!task) {
     res.status(400);
