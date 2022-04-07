@@ -1,26 +1,47 @@
 import { Icon } from "@iconify/react";
-import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Task, PriorityColors } from "../../interfaces";
+import { Task, PriorityColors, Category, CategoryColors } from "../../interfaces";
 import Controls from "../controls/Controls";
 import ShapeRadio from "../controls/ShapeRadio";
 import RadioGroup from "../controls/RadioGroup";
 import Modal from "../Modal";
 import Tooltip from "../Tooltip";
 import Button from "../buttons/Button";
+import { useToggle } from "react-use";
+import CategoryPanel from "./CategoryPanel";
 
 interface AddTaskModalProps {
   setModal: (modal: string) => void;
 }
 
+const categoryOptions: Category[] = [
+  // {
+  //   id: "1",
+  //   color: CategoryColors.AMBER_500,
+  //   title: "کار",
+  // },
+  // {
+  //   id: "2",
+  //   color: CategoryColors.ORANGE_500,
+  //   title: "تفریح",
+  // },
+  // {
+  //   id: "3",
+  //   color: CategoryColors.PURPLE_500,
+  //   title: "پروژه شخصی",
+  // },
+];
+
 type FieldValuesType = Exclude<Task, "time">;
 
 export default function AddTaskModal({ setModal }: AddTaskModalProps) {
+  const [categoryPanel, toggleCategoryPanel] = useToggle(false);
+
   const { control, handleSubmit } = useForm<FieldValuesType>({
     defaultValues: {
       priority: "medium",
       title: "",
-      category: { color: "", title: "" },
+      category: null!,
       dueDate: new Date(),
       reminder: false,
     },
@@ -47,13 +68,13 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
             render={({ field }) => (
               <RadioGroup {...field} label="اولویت:">
                 <Tooltip text="پایین">
-                  <ShapeRadio value="low" color={PriorityColors.low} />
+                  <ShapeRadio value="low" color={PriorityColors.low} width={40} />
                 </Tooltip>
                 <Tooltip text="متوسط">
-                  <ShapeRadio value="medium" color={PriorityColors.medium} />
+                  <ShapeRadio value="medium" color={PriorityColors.medium} width={40} />
                 </Tooltip>
                 <Tooltip text="بالا">
-                  <ShapeRadio value="high" color={PriorityColors.high} />
+                  <ShapeRadio value="high" color={PriorityColors.high} width={40} />
                 </Tooltip>
               </RadioGroup>
             )}
@@ -65,6 +86,22 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
               required: "این فیلد الزامی است!",
             }}
             render={({ field, fieldState }) => <Controls.Input label="عنوان تکلیف" {...field} {...fieldState} />}
+          />
+          <Controller
+            name="category"
+            control={control}
+            rules={{
+              required: "این فیلد الزامی است!",
+            }}
+            render={({ field, fieldState }) => (
+              <Controls.CategorySelect
+                label="دسته‌بندی:"
+                options={categoryOptions}
+                togglePanel={toggleCategoryPanel}
+                {...field}
+                {...fieldState}
+              />
+            )}
           />
           <Controller
             name="dueDate"
@@ -83,6 +120,7 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
             rippleColor="#e5e7eb"
           />
         </form>
+        {categoryPanel && <CategoryPanel togglePanel={toggleCategoryPanel} />}
       </div>
     </Modal>
   );

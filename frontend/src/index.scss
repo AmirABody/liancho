@@ -9,6 +9,9 @@
   input {
     @apply outline-none focus:outline-none;
   }
+  select {
+    @apply outline-none focus:outline-none;
+  }
 }
 
 table {

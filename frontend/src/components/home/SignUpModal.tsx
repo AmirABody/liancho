@@ -76,7 +76,7 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
   return (
     <>
       <ToastContainer />
-      <Modal setModal={setModal}>
+      <Modal setModal={setModal} center={false}>
         <div className="flex flex-col gap-y-2">
           <div className="flex justify-between items-center mb-2">
             <h1 className="text-[1.3rem] font-semibold text-gray-800 dark:text-white">ثبت نام</h1>
@@ -152,8 +152,12 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
               control={control}
               render={({ field }) => <Controls.Checkbox label="مرا به خاطر بسپار" {...field} />}
             /> */}
-            <div className="flex flex-col gap-y-4 -mt-2">
-              <LinkButton className="self-end" text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
+            <div className="flex flex-col gap-y-4">
+              <LinkButton
+                className="self-end"
+                text="ثبت نام کردم، بریم ورود کنیم:)"
+                onClick={() => setModal("signin")}
+              />
               <Button
                 type="submit"
                 className={`${

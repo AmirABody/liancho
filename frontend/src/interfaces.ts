@@ -12,8 +12,20 @@ export const PriorityColors: Record<Priority, string> = {
   high: "#ef4444", //tw-red-500
 };
 
+export enum CategoryColors {
+  AMBER_500 = "#f59e0b",
+  LIME_500 = "#84cc16",
+  SKY_500 = "#0ea5e9",
+  PURPLE_500 = "#a855f7",
+  PINK_500 = "#ec4899",
+  ORANGE_500 = "#f97316",
+  INDIGO_500 = "#6366f1",
+  GREEN_500 = "#22c55e",
+}
+
 export interface Category {
-  color: string;
+  id: string;
+  color: CategoryColors;
   title: string;
 }
 

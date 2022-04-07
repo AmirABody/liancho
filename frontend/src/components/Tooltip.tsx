@@ -17,10 +17,10 @@ export default React.forwardRef<HTMLElement, TooltipProps>(function Tooltip({ te
       <AnimatePresence>
         {visible && (
           <motion.div
-            initial={{ opacity: 0.8, scale: 0.8, x: '-50%', y: 10 }}
+            initial={{ opacity: 0.8, scale: 0.8, x: "-50%", y: 10 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute bg-gray-500 text-white text-sm px-1 py-[1px] rounded top-full left-1/2 z-[1000]"
+            className="max-w-max w-24 text-center absolute inline-block bg-gray-500 text-white text-sm px-1 py-[1px] rounded top-full left-1/2 z-[1000]"
           >
             {text}
           </motion.div>
