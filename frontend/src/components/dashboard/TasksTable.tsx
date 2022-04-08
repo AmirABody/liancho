@@ -11,7 +11,7 @@ export default function TasksTable() {
       <table className="w-full">
         <thead>
           <tr className="text-gray-700 font-semibold bg-gray-200">
-            <th className="w-10 text-[10px] px-0">
+            <th className="w-9 text-[10px] px-0">
               اولویت
             </th>
             <th className="w-[500px] text-right">عنوان تکلیف</th>
