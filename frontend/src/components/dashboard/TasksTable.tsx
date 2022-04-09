@@ -20,7 +20,7 @@ export default function TasksTable({ tasks, selectedTasks, setSelectedTasks }: T
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="text-gray-700 dark:text-gray-50 font-semibold bg-gray-200 dark:bg-gray-900/80">
+          <tr className="text-gray-700 dark:text-gray-50 font-semibold bg-gray-200 dark:bg-gray-500">
             <th className="w-1 bg-transparent px-0"></th>
             <th className="w-[500px] text-right">عنوان تکلیف</th>
             <th className="w-[180px]">دسته‌بندی</th>
@@ -35,7 +35,7 @@ export default function TasksTable({ tasks, selectedTasks, setSelectedTasks }: T
             return (
               <tr
                 key={task._id}
-                className={`${isSelected ? 'bg-gray-200/80 dark:bg-gray-800 scale-[.99]' : 'bg-gray-100 dark:bg-gray-800/70 hover:bg-gray-200/60 dark:hover:bg-gray-800/90'} text-gray-500 dark:text-gray-50 font-semibold cursor-pointer transition-all`}
+                className={`${isSelected ? 'bg-gray-200/80 dark:bg-gray-600/60 scale-[.99]' : 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200/60 dark:hover:bg-gray-600/80'} text-gray-500 dark:text-gray-50 font-semibold cursor-pointer transition-all`}
                 onClick={(e) => handleClick(task._id!)}
               >
                 <td className="px-0" style={{ backgroundColor: PriorityColors[task.priority] }} />
