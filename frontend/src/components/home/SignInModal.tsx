@@ -12,6 +12,8 @@ import { toast } from "../CustomToast";
 import { User } from "../../interfaces";
 import { PuffLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import { alert } from "../ConfirmAlert";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface SignInModalProps {
   setModal: (modal: string) => void;
@@ -24,6 +26,8 @@ interface FieldValuesType {
 }
 
 export default function SignInModal({ setModal }: SignInModalProps) {
+  const { theme } = useTheme();
+
   const [passwordVisible, togglePasswordVisible] = useToggle(false);
 
   let navigate = useNavigate();
@@ -74,7 +78,7 @@ export default function SignInModal({ setModal }: SignInModalProps) {
   const handlePasswordReset = async () => {
     if (await trigger("email", { shouldFocus: true })) {
       const email = getValues("email");
-      resetPassMutation.mutate(email);
+      alert({ text: "آیا اطمینان دارید؟", action: () => resetPassMutation.mutate(email) });
     }
   };
 
@@ -136,8 +140,10 @@ export default function SignInModal({ setModal }: SignInModalProps) {
             <div className="inline-flex flex-col items-end">
               <LinkButton text="ثبت نام نکردم!" onClick={() => setModal("signup")} />
               <div className="flex items-center w-fit gap-x-1">
-                <LinkButton text="رمز عبورم رو فراموش کردم." onClick={() => handlePasswordReset()} />
-                {resetPassMutation.isLoading && <PuffLoader color="white" size={30} />}
+                <LinkButton text="رمز عبورم رو فراموش کردم." onClick={handlePasswordReset} />
+                {resetPassMutation.isLoading && (
+                  <PuffLoader color={theme === "light" ? "#374151" : "white"} size={30} />
+                )}
               </div>
             </div>
             <Button

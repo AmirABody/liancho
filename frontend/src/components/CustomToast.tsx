@@ -35,7 +35,7 @@ function Toast({ toast, config }: ToastProps) {
   useEffect(() => {
     if (config.autoRemove) {
       setTimeout(() => {
-        eventManager.emit(Event.Delete, toast.id);
+        eventManager.emit(Event.DeleteToast, toast.id);
       }, config.autoRemoveTime);
     }
   }, []);
@@ -54,7 +54,7 @@ function Toast({ toast, config }: ToastProps) {
         <span className="font-medium py-3 flex-grow">{toast.message}</span>
         <button
           onClick={() => {
-            eventManager.emit(Event.Delete, toast.id);
+            eventManager.emit(Event.DeleteToast, toast.id);
           }}
         >
           <Icon icon="gridicons:cross" color="white" width={22} />
@@ -109,9 +109,9 @@ export function ToastContainer(toastConfig: Partial<ToastConfig>) {
   };
 
   useEffect(() => {
-    eventManager.on(Event.Create, addToast).on(Event.Delete, deleteToast);
+    eventManager.on(Event.CreateToast, addToast).on(Event.DeleteToast, deleteToast);
     return () => {
-      eventManager.off(Event.Create).off(Event.Delete);
+      eventManager.off(Event.CreateToast).off(Event.DeleteToast);
     };
   }, []);
 
@@ -127,5 +127,5 @@ export function ToastContainer(toastConfig: Partial<ToastConfig>) {
 }
 
 export function toast({ type, message }: Pick<ToastType, "type" | "message">) {
-  eventManager.emit(Event.Create, { type, message });
+  eventManager.emit(Event.CreateToast, { type, message });
 }

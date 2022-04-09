@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Loading from "./components/Loading";
 import NotFound from "./pages/NotFound";
 import { ToastContainer } from "./components/CustomToast";
+import { AlertContainer } from "./components/ConfirmAlert";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function App() {
       <ThemeProvider>
         <div className="font-danafanum">
           <ToastContainer />
+          <AlertContainer />
           <Router>
             <Routes>
               <Route path="/" element={<Landing />} />

@@ -1,22 +1,30 @@
-import { Toast } from "../interfaces";
+import { Alert, Toast } from "../interfaces";
 
 export const enum Event {
-  Create,
-  Delete,
+  CreateToast,
+  DeleteToast,
+  SetAlert,
+  DeleteAlert,
 }
 
-type OnCreateCallback = ({ type, message }: Pick<Toast, "type" | "message">) => void;
-type OnDeleteCallback = (id: number) => void;
+type OnCreateToastCallback = ({ type, message }: Pick<Toast, "type" | "message">) => void;
+type OnDeleteToastCallback = (id: number) => void;
+type OnSetAlertCallback = ({ text, action }: Alert) => void;
+type OnDeleteAlertCallback = () => void;
 
-type Callback = OnCreateCallback | OnDeleteCallback;
+type Callback = OnCreateToastCallback | OnDeleteToastCallback | OnSetAlertCallback | OnDeleteAlertCallback;
 
 export interface EventManager {
   list: Map<Event, Callback[]>;
-  on(event: Event.Create, callback: OnCreateCallback): EventManager;
-  on(event: Event.Delete, callback: OnDeleteCallback): EventManager;
+  on(event: Event.CreateToast, callback: OnCreateToastCallback): EventManager;
+  on(event: Event.DeleteToast, callback: OnDeleteToastCallback): EventManager;
+  on(event: Event.SetAlert, callback: OnSetAlertCallback): EventManager;
+  on(event: Event.DeleteAlert, callback: OnDeleteAlertCallback): EventManager;
   off(event: Event, callback?: Callback): EventManager;
-  emit(event: Event.Create, { type, message }: Pick<Toast, "type" | "message">): void;
-  emit(event: Event.Delete, id: number): void;
+  emit(event: Event.CreateToast, { type, message }: Pick<Toast, "type" | "message">): void;
+  emit(event: Event.DeleteToast, id: number): void;
+  emit(event: Event.SetAlert, { text, action }: Alert): void;
+  emit(event: Event.DeleteAlert): void;
 }
 
 export const eventManager: EventManager = {
@@ -44,5 +52,5 @@ export const eventManager: EventManager = {
         // @ts-ignore
         callback(...args);
       });
-  }
+  },
 };

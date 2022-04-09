@@ -8,6 +8,7 @@ import { useState } from "react";
 import SignInModal from "../components/home/SignInModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, useLogOut } from "./user-api/hooks-api";
+import { alert } from "../components/ConfirmAlert";
 
 function Landing() {
   const [modal, setModal] = useState<string>("");
@@ -15,7 +16,6 @@ function Landing() {
   const { user } = useAuth();
 
   const mutation = useLogOut();
-
 
   const handleSignOut = () => {
     mutation.mutate();
@@ -44,7 +44,9 @@ function Landing() {
                     text="خروج"
                     rippleColor="rgba(255, 255, 255, 0.3)"
                     endIcon={<Icon icon="majesticons:logout" width="27" hFlip />}
-                    onClick={handleSignOut}
+                    onClick={() => {
+                      alert({ text: "مطمئنید که می‌خواهید خارج شوید؟", action: handleSignOut });
+                    }}
                   />
                 ) : (
                   <>

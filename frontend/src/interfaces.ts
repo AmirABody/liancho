@@ -45,4 +45,9 @@ export interface Toast {
   message: string;
 }
 
+export interface Alert {
+  text: string;
+  action: Function;
+}
+
 export type DashboardTab = "overview" | "tasks" | "reports" | "infography";
