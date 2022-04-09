@@ -1,7 +1,6 @@
 // import { motion } from "framer-motion";
-import { useContext } from "react";
 import { PuffLoader } from "react-spinners";
-import { ThemeContext } from "../contexts/ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function Loading() {
   // const dim = {
@@ -12,7 +11,7 @@ export default function Loading() {
   //   },
   // };
 
-  const { theme } = useContext(ThemeContext)!;
+  const { theme } = useTheme();
 
   return (
     <div className="flex justify-center items-center h-screen dark:bg-gray-800">

@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface ThemeContextInterface {
   theme: string;
@@ -11,6 +11,10 @@ interface ThemeProviderProps {
 }
 
 export const ThemeContext = createContext<ThemeContextInterface | null>(null);
+
+export function useTheme() {
+  return useContext(ThemeContext)!
+}
 
 const getInitalTheme = () => {
   if (typeof window !== "undefined" && window.localStorage) {

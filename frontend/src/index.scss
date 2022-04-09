@@ -19,7 +19,31 @@ table {
 }
 
 th, td {
-  @apply text-center border-x border-y-2 border-white px-4;
+  @apply text-center border-x border-y-2 border-white dark:border-gray-700 px-4;
+}
+
+th {
+  border-top: none;
+}
+
+th:first-child {
+  border-right: none;
+}
+
+th:last-child {
+  border-left: none;
+}
+
+td:first-child {
+  border-right: none;
+}
+
+td:last-child {
+  border-left: none;
+}
+
+tr:last-child td {
+  border-bottom: none;
 }
 
 th {

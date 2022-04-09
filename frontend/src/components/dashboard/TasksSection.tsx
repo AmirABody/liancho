@@ -1,9 +1,13 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import { BeatLoader } from "react-spinners";
+import { useTheme } from "../../contexts/ThemeContext";
+import { useTasks } from "../../pages/task-api/hooks-api";
 import Button from "../buttons/Button";
 import IconButton from "../buttons/IconButton";
 import IconButtonGroup from "../buttons/IconButtonGroup";
 import Card from "./Card";
+import TasksGrid from "./TasksGrid";
 import TasksTable from "./TasksTable";
 
 type TasksView = "list" | "grid";
@@ -13,29 +17,41 @@ interface TasksSectionProps {
 }
 
 export default function TasksSection({ setModal }: TasksSectionProps) {
+  const { theme } = useTheme();
+
+  const [selectedTasks, setSelectedTasks] = useState<string[]>([])
+  
+  const { tasks, isLoading, isSuccess, error } = useTasks();
+
   const [tasksView, setTasksView] = useState<TasksView>("list");
 
   const handleViewChange = (value: string) => {
     setTasksView(value as TasksView);
   };
 
+  const handleDelete = () => {
+    if (selectedTasks.length > 0) {
+      
+    }
+  }
+
   return (
     <Card className="col-span-10">
       <div className="flex justify-between items-center mb-4">
-        <span className="text-[22px] font-semibold text-gray-800">تکالیف</span>
+        <span className="text-[22px] font-semibold text-gray-800 dark:text-gray-50">تکالیف</span>
         <div className="flex items-center gap-x-6">
           <div className="flex items-center gap-x-[2px]">
             <IconButton
-              className="hover:bg-gray-100 text-blue-500"
+              className="hover:bg-gray-100 dark:hover:bg-gray-500/50 text-blue-500"
               icon={<Icon icon="clarity:edit-line" width="20" />}
               rippleColor="rgba(255, 255, 255, 0.5)"
               onClick={(e) => {}}
             />
             <IconButton
-              className="hover:bg-gray-100 text-red-600"
+              className="hover:bg-gray-100 dark:hover:bg-gray-500/50 text-red-600"
               icon={<Icon icon="bi:trash" width="20" />}
               rippleColor="rgba(255, 255, 255, 0.5)"
-              onClick={(e) => {}}
+              onClick={handleDelete}
             />
           </div>
           <IconButtonGroup
@@ -52,15 +68,23 @@ export default function TasksSection({ setModal }: TasksSectionProps) {
             </button>
           </IconButtonGroup>
           <Button
-            className="text-green-500 border-2 border-green-500 hover:bg-green-500 hover:text-white font-semibold py-[2px]"
+            className="text-green-500 dark:text-white dark:bg-green-500 border-2 border-green-500 dark:border-none hover:bg-green-500 hover:text-white font-semibold py-[2px] dark:py-1"
             text="افزودن تکلیف"
             rippleColor="white"
             endIcon={<Icon icon="akar-icons:plus" width="22" />}
-            onClick={() => {setModal("addTask")}}
+            onClick={() => {
+              setModal("addTask");
+            }}
           />
         </div>
       </div>
-      {tasksView === "list" && <TasksTable />}
+      {isLoading && (
+        <div className="flex justify-center py-28">
+          <BeatLoader size={30} margin={5} color={theme === "light" ? '#4b5563' : '#9ca3af'} />
+        </div>
+      )}
+      {tasksView === "list" && isSuccess && <TasksTable tasks={tasks} selectedTasks={selectedTasks} setSelectedTasks={setSelectedTasks} />}
+      {tasksView === "grid" && isSuccess && <TasksGrid tasks={tasks} setSelectedTasks={setSelectedTasks} />}
     </Card>
   );
 }

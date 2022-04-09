@@ -13,4 +13,10 @@ export const setTask = async (task: Task) => {
   const res = await axios.post(API_URL, task);
 
   return res.data;
-}
+};
+
+export const deleteTask = async (taskId: string) => {
+  const res = await axios.delete(API_URL + taskId);
+
+  return res.data;
+};

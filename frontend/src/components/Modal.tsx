@@ -10,7 +10,7 @@ export default function Modal({ setModal, children, center = true }: ModalProps)
       <div className="bg-gray-400/30 dark:bg-gray-800/80 w-full h-full fixed" onDoubleClick={() => setModal("")} />
       <div className={`flex justify-center w-full h-full ${center ? "items-center" : ""}`}>
         <div
-          className={`relative w-4/12 bg-white dark:bg-gray-600 dark:border dark:border-gray-500 rounded-md p-5 h-fit z-[60] ${
+          className={`relative w-[380px] bg-white dark:bg-gray-600 dark:border dark:border-gray-500 rounded-md p-5 h-fit z-[60] ${
             !center ? "my-10" : ""
           }`}
         >

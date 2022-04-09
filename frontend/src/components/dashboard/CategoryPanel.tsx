@@ -8,7 +8,7 @@ import Button from "../buttons/Button";
 import Controls from "../controls/Controls";
 import RadioGroup from "../controls/RadioGroup";
 import ShapeRadio from "../controls/ShapeRadio";
-import { toast, ToastContainer } from "../CustomToast";
+import { toast } from "../CustomToast";
 import Modal from "../Modal";
 
 interface CategoryPanelProps {

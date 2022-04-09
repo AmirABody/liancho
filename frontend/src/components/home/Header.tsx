@@ -1,8 +1,7 @@
-import { useContext } from "react";
 import Logo from "../Logo";
 import { Icon } from "@iconify/react";
 import Button from "../buttons/Button";
-import { ThemeContext } from "../../contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 import { Link } from "react-router-dom";
 
 interface HeaderProps {
@@ -10,7 +9,7 @@ interface HeaderProps {
 }
 
 export default function Header({ isAuth }: HeaderProps) {
-  const { theme, setTheme } = useContext(ThemeContext)!;
+  const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");

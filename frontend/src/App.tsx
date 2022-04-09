@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Loading from "./components/Loading";
 import NotFound from "./pages/NotFound";
+import { ToastContainer } from "./components/CustomToast";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <div className="font-danafanum">
+          <ToastContainer />
           <Router>
             <Routes>
               <Route path="/" element={<Landing />} />

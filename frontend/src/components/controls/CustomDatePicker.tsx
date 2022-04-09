@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import "react-multi-date-picker/styles/layouts/mobile.css";
 import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
-import { ThemeContext } from "../../contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface CustomDatePickerProps {
   value: Date;
@@ -18,7 +18,7 @@ export default React.forwardRef<HTMLElement, CustomDatePickerProps>(function Cus
   { value, label, onChange },
   ref
 ) {
-  const { theme } = useContext(ThemeContext)!;
+  const { theme } = useTheme();
 
   return (
     <div className="flex items-center gap-x-3">
