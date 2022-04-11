@@ -17,6 +17,7 @@
     "color": "^4.2.1",
     "framer-motion": "^6.2.8",
     "jalali-moment": "^3.3.11",
+    "query-string": "^7.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.28.1",

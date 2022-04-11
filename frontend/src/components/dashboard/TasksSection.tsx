@@ -1,11 +1,15 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { BeatLoader } from "react-spinners";
 import { useTheme } from "../../contexts/ThemeContext";
+import { deleteTasks } from "../../pages/task-api/api";
 import { useTasks } from "../../pages/task-api/hooks-api";
 import Button from "../buttons/Button";
 import IconButton from "../buttons/IconButton";
 import IconButtonGroup from "../buttons/IconButtonGroup";
+import { alert } from "../ConfirmAlert";
+import { toast } from "../CustomToast";
 import Card from "./Card";
 import TasksGrid from "./TasksGrid";
 import TasksTable from "./TasksTable";
@@ -19,8 +23,21 @@ interface TasksSectionProps {
 export default function TasksSection({ setModal }: TasksSectionProps) {
   const { theme } = useTheme();
 
-  const [selectedTasks, setSelectedTasks] = useState<string[]>([])
-  
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation((ids: string[]) => deleteTasks(ids), {
+    onError: (error, variables, context) => {
+      let message = (error as any).response.data.message.fr;
+      toast({ type: "error", message });
+    },
+    onSuccess: (data, variables, context) => {
+      toast({ type: "success", message: "تکالیف با موفقیت حذف شدند!" });
+      queryClient.invalidateQueries("tasks");
+    },
+  });
+
+  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+
   const { tasks, isLoading, isSuccess, error } = useTasks();
 
   const [tasksView, setTasksView] = useState<TasksView>("list");
@@ -31,9 +48,15 @@ export default function TasksSection({ setModal }: TasksSectionProps) {
 
   const handleDelete = () => {
     if (selectedTasks.length > 0) {
-      
+      alert({
+        text: "آیا اطمینان از حذف دارید؟",
+        action: () => {
+          return deleteMutation.mutateAsync(selectedTasks)
+        },
+      });
     }
-  }
+    setSelectedTasks([]);
+  };
 
   return (
     <Card className="col-span-10">
@@ -80,10 +103,12 @@ export default function TasksSection({ setModal }: TasksSectionProps) {
       </div>
       {isLoading && (
         <div className="flex justify-center py-28">
-          <BeatLoader size={30} margin={5} color={theme === "light" ? '#4b5563' : '#9ca3af'} />
+          <BeatLoader size={30} margin={5} color={theme === "light" ? "#4b5563" : "#9ca3af"} />
         </div>
       )}
-      {tasksView === "list" && isSuccess && <TasksTable tasks={tasks} selectedTasks={selectedTasks} setSelectedTasks={setSelectedTasks} />}
+      {tasksView === "list" && isSuccess && (
+        <TasksTable tasks={tasks} selectedTasks={selectedTasks} setSelectedTasks={setSelectedTasks} />
+      )}
       {tasksView === "grid" && isSuccess && <TasksGrid tasks={tasks} setSelectedTasks={setSelectedTasks} />}
     </Card>
   );

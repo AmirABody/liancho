@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Task } from "../../interfaces";
+import queryString from "query-string";
 
 const API_URL = "/api/tasks/";
 
@@ -15,8 +16,9 @@ export const setTask = async (task: Task) => {
   return res.data;
 };
 
-export const deleteTask = async (taskId: string) => {
-  const res = await axios.delete(API_URL + taskId);
+export const deleteTasks = async (tasksId: string[]) => {
+  let queryParams = queryString.stringify({ tasksId }, { arrayFormat: "bracket" });
+  const res = await axios.delete(API_URL + '?' + queryParams);
 
   return res.data;
 };

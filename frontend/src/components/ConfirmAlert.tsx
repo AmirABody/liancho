@@ -26,7 +26,7 @@ export default function ConfirmAlert({ text, action }: ConfirmAlertProps) {
           text="مطمئنم"
           onClick={() => {
             setPending(true);
-            action().then(() => {
+            action().finally(() => {
               setPending(false);
               eventManager.emit(Event.DeleteAlert);
             });
