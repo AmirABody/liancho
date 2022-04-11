@@ -33,7 +33,7 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
     },
     onSuccess: (data, variables, context) => {
       toast({ type: "success", message: "تکلیف با موفقیت ساخته شد!" });
-      queryClient.resetQueries("tasks");
+      queryClient.invalidateQueries("tasks");
       setModal("");
     },
   });

@@ -12,11 +12,11 @@ export const useAuth = () => {
 export const useLogOut = () => {
   const queryClient = useQueryClient();
 
-  const { isSuccess, isLoading, isError, mutate } = useMutation("userLogOut", logout, {
+  const { isSuccess, isLoading, isError, mutate, mutateAsync } = useMutation("userLogOut", logout, {
     onSuccess: () => {
       queryClient.resetQueries("userAuth");
     },
   });
 
-  return { isSuccess, isLoading, isError, mutate };
+  return { isSuccess, isLoading, isError, mutate, mutateAsync };
 };

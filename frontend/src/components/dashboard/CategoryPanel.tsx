@@ -29,7 +29,7 @@ export default function CategoryPanel({ togglePanel }: CategoryPanelProps) {
     },
     onSuccess: (data, variables, context) => {
       toast({ type: "success", message: "دسته بندی با موفقیت ساخته شد!" });
-      queryClient.resetQueries("cats");
+      queryClient.invalidateQueries("cats");
       togglePanel(false);
     },
   });

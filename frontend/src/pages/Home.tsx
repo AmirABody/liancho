@@ -18,7 +18,7 @@ function Landing() {
   const mutation = useLogOut();
 
   const handleSignOut = () => {
-    mutation.mutate();
+    return mutation.mutateAsync();
   };
 
   return (

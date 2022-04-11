@@ -78,7 +78,7 @@ export default function SignInModal({ setModal }: SignInModalProps) {
   const handlePasswordReset = async () => {
     if (await trigger("email", { shouldFocus: true })) {
       const email = getValues("email");
-      alert({ text: "آیا اطمینان دارید؟", action: () => resetPassMutation.mutate(email) });
+      alert({ text: "آیا اطمینان دارید؟", action: () => resetPassMutation.mutateAsync(email) });
     }
   };
 
@@ -141,9 +141,9 @@ export default function SignInModal({ setModal }: SignInModalProps) {
               <LinkButton text="ثبت نام نکردم!" onClick={() => setModal("signup")} />
               <div className="flex items-center w-fit gap-x-1">
                 <LinkButton text="رمز عبورم رو فراموش کردم." onClick={handlePasswordReset} />
-                {resetPassMutation.isLoading && (
+                {/* {resetPassMutation.isLoading && (
                   <PuffLoader color={theme === "light" ? "#374151" : "white"} size={30} />
-                )}
+                )} */}
               </div>
             </div>
             <Button
