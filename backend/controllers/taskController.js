@@ -86,4 +86,32 @@ const deleteTask = asyncHandler(async (req, res) => {
   res.status(200).json({ id: req.params.id });
 });
 
-module.exports = { getTasks, setTask, updateTask, deleteTask };
+// @desc    Delete tasks
+// @route   DELETE /api/tasks
+// @access  Private
+const deleteTasks = asyncHandler(async (req, res) => {
+  let tasksId = req.query.tasksId
+  let n = tasksId.length;
+  let task;
+
+  for (let i = 0; i < n; i++) {
+    if (mongoose.Types.ObjectId.isValid(tasksId[i])) task = await Task.findById(tasksId[i]);
+
+    if (!task) {
+      res.status(400);
+      throw new Error("Task not found");
+    }
+
+    // Make sure the logged in user matches the task user
+    if (task.userId.toString() !== req.user?.id) {
+      res.status(401);
+      throw new Error("User not authorized!");
+    }
+
+    await task.remove();
+  }
+
+  res.status(200).json({ tasksId });
+});
+
+module.exports = { getTasks, setTask, updateTask, deleteTask, deleteTasks };
