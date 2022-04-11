@@ -50,4 +50,9 @@ export interface Alert {
   action: Function;
 }
 
+export interface Modal {
+  type: string;
+  payload?: any;
+}
+
 export type DashboardTab = "overview" | "tasks" | "reports" | "infography";

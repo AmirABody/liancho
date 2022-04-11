@@ -9,14 +9,15 @@ import LinkButton from "../buttons/LinkButton";
 import { useMutation } from "react-query";
 import { login as loginUser, sendPasswordReset } from "../../pages/user-api/api";
 import { toast } from "../CustomToast";
-import { User } from "../../interfaces";
+import { User, Modal as ModalType } from "../../interfaces";
 import { PuffLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import { alert } from "../ConfirmAlert";
 import { useTheme } from "../../contexts/ThemeContext";
+import { Dispatch, SetStateAction } from "react";
 
 interface SignInModalProps {
-  setModal: (modal: string) => void;
+  setModal: Dispatch<SetStateAction<ModalType | null>>;
 }
 
 interface FieldValuesType {
@@ -87,7 +88,7 @@ export default function SignInModal({ setModal }: SignInModalProps) {
       <div className="flex flex-col gap-y-2">
         <div className="flex justify-between items-center">
           <h1 className="text-[1.3rem] font-semibold text-gray-800 dark:text-white">ورود</h1>
-          <button onClick={() => setModal("")}>
+          <button onClick={() => setModal(null)}>
             <Icon icon="gridicons:cross" color="#DC2626" width={22} />
           </button>
         </div>
@@ -138,7 +139,7 @@ export default function SignInModal({ setModal }: SignInModalProps) {
           />
           <div className="flex flex-col gap-y-4 -mt-2">
             <div className="inline-flex flex-col items-end">
-              <LinkButton text="ثبت نام نکردم!" onClick={() => setModal("signup")} />
+              <LinkButton text="ثبت نام نکردم!" onClick={() => setModal({ type: "signup" })} />
               <div className="flex items-center w-fit gap-x-1">
                 <LinkButton text="رمز عبورم رو فراموش کردم." onClick={handlePasswordReset} />
                 {/* {resetPassMutation.isLoading && (

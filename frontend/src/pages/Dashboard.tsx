@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import AddTaskModal from "../components/dashboard/AddTaskModal";
+import TaskModal from "../components/dashboard/TaskModal";
 import HeaderSection from "../components/dashboard/HeaderSection";
 import Sidebar from "../components/dashboard/Sidebar";
 import TasksSection from "../components/dashboard/TasksSection";
+import { Modal } from "../interfaces";
 
 export default function Dashboard() {
-  const [modal, setModal] = useState<string>("");
+  const [modal, setModal] = useState<Modal | null>(null);
 
   return (
     <>
@@ -18,7 +19,8 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      {modal === "addTask" && <AddTaskModal setModal={setModal} />}
+      {modal?.type === "addTask" && <TaskModal setModal={setModal} type="add" />}
+      {modal?.type === "editTask" && <TaskModal setModal={setModal} type="edit" toBeUpdTask={modal.payload.task} />}
     </>
   );
 }

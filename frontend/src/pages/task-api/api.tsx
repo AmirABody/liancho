@@ -16,9 +16,15 @@ export const setTask = async (task: Task) => {
   return res.data;
 };
 
+export const editTask = async (taskId: string, updTask: Task) => {
+  const res = await axios.put(API_URL + taskId, updTask);
+
+  return res.data;
+};
+
 export const deleteTasks = async (tasksId: string[]) => {
   let queryParams = queryString.stringify({ tasksId }, { arrayFormat: "bracket" });
-  const res = await axios.delete(API_URL + '?' + queryParams);
+  const res = await axios.delete(API_URL + "?" + queryParams);
 
   return res.data;
 };

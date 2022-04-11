@@ -1,8 +1,9 @@
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { BeatLoader } from "react-spinners";
 import { useTheme } from "../../contexts/ThemeContext";
+import { Modal as ModalType, Task } from "../../interfaces";
 import { deleteTasks } from "../../pages/task-api/api";
 import { useTasks } from "../../pages/task-api/hooks-api";
 import Button from "../buttons/Button";
@@ -10,6 +11,7 @@ import IconButton from "../buttons/IconButton";
 import IconButtonGroup from "../buttons/IconButtonGroup";
 import { alert } from "../ConfirmAlert";
 import { toast } from "../CustomToast";
+import Tooltip from "../Tooltip";
 import Card from "./Card";
 import TasksGrid from "./TasksGrid";
 import TasksTable from "./TasksTable";
@@ -17,7 +19,7 @@ import TasksTable from "./TasksTable";
 type TasksView = "list" | "grid";
 
 interface TasksSectionProps {
-  setModal: (modal: string) => void;
+  setModal: Dispatch<SetStateAction<ModalType | null>>;
 }
 
 export default function TasksSection({ setModal }: TasksSectionProps) {
@@ -51,9 +53,17 @@ export default function TasksSection({ setModal }: TasksSectionProps) {
       alert({
         text: "آیا اطمینان از حذف دارید؟",
         action: () => {
-          return deleteMutation.mutateAsync(selectedTasks)
+          return deleteMutation.mutateAsync(selectedTasks);
         },
       });
+    }
+    setSelectedTasks([]);
+  };
+
+  const handleEdit = () => {
+    if (selectedTasks.length === 1) {
+      let task = tasks.find((task: Task) => task._id === selectedTasks[0]);
+      setModal({ type: "editTask", payload: { task } });
     }
     setSelectedTasks([]);
   };
@@ -64,18 +74,22 @@ export default function TasksSection({ setModal }: TasksSectionProps) {
         <span className="text-[22px] font-semibold text-gray-800 dark:text-gray-50">تکالیف</span>
         <div className="flex items-center gap-x-6">
           <div className="flex items-center gap-x-[2px]">
-            <IconButton
-              className="hover:bg-gray-100 dark:hover:bg-gray-500/50 text-blue-500"
-              icon={<Icon icon="clarity:edit-line" width="20" />}
-              rippleColor="rgba(255, 255, 255, 0.5)"
-              onClick={(e) => {}}
-            />
-            <IconButton
-              className="hover:bg-gray-100 dark:hover:bg-gray-500/50 text-red-600"
-              icon={<Icon icon="bi:trash" width="20" />}
-              rippleColor="rgba(255, 255, 255, 0.5)"
-              onClick={handleDelete}
-            />
+            <Tooltip text="ویرایش">
+              <IconButton
+                className="hover:bg-gray-100 dark:hover:bg-gray-500/50 text-blue-500"
+                icon={<Icon icon="clarity:edit-line" width="20" />}
+                rippleColor="rgba(255, 255, 255, 0.5)"
+                onClick={handleEdit}
+              />
+            </Tooltip>
+            <Tooltip text="حذف">
+              <IconButton
+                className="hover:bg-gray-100 dark:hover:bg-gray-500/50 text-red-600"
+                icon={<Icon icon="bi:trash" width="20" />}
+                rippleColor="rgba(255, 255, 255, 0.5)"
+                onClick={handleDelete}
+              />
+            </Tooltip>
           </div>
           <IconButtonGroup
             className="text-gray-400/80 bg-gray-100"
@@ -96,7 +110,7 @@ export default function TasksSection({ setModal }: TasksSectionProps) {
             rippleColor="white"
             endIcon={<Icon icon="akar-icons:plus" width="22" />}
             onClick={() => {
-              setModal("addTask");
+              setModal({ type: "addTask" });
             }}
           />
         </div>

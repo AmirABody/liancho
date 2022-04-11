@@ -9,9 +9,10 @@ import SignInModal from "../components/home/SignInModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, useLogOut } from "./user-api/hooks-api";
 import { alert } from "../components/ConfirmAlert";
+import { Modal } from "../interfaces";
 
 function Landing() {
-  const [modal, setModal] = useState<string>("");
+  const [modal, setModal] = useState<Modal | null>(null);
 
   const { user } = useAuth();
 
@@ -55,14 +56,14 @@ function Landing() {
                       text="ثبت نام"
                       rippleColor="rgba(255, 255, 255, 0.3)"
                       endIcon={<Icon icon="akar-icons:person-add" width="26" />}
-                      onClick={() => setModal("signup")}
+                      onClick={() => setModal({ type: "signup" })}
                     />
                     <Button
                       className="w-[180px] h-[55px] text-2xl bg-white dark:bg-blue-500 font-medium text-blue-500 dark:text-white dark:hover:bg-blue-400 hover:bg-blue-500 hover:text-white border-2 dark:border-0 border-blue-500 shadow-4"
                       text="ورود"
                       rippleColor="rgba(255, 255, 255, 0.3)"
                       endIcon={<Icon icon="majesticons:login" width="27" hFlip />}
-                      onClick={() => setModal("signin")}
+                      onClick={() => setModal({ type: "signin" })}
                     />
                   </>
                 )}
@@ -78,10 +79,10 @@ function Landing() {
         </div>
 
         <AnimatePresence>
-          {modal.length && (
+          {modal && (
             <motion.div key="modal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              {modal === "signup" && <SignUpModal setModal={setModal} />}
-              {modal === "signin" && <SignInModal setModal={setModal} />}
+              {modal?.type === "signup" && <SignUpModal setModal={setModal} />}
+              {modal?.type === "signin" && <SignInModal setModal={setModal} />}
             </motion.div>
           )}
         </AnimatePresence>

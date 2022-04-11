@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Task, PriorityColors, Category, CategoryColors } from "../../interfaces";
+import { Task, PriorityColors, Category, CategoryColors, Modal as ModalType } from "../../interfaces";
 import Controls from "../controls/Controls";
 import ShapeRadio from "../controls/ShapeRadio";
 import RadioGroup from "../controls/RadioGroup";
@@ -11,43 +11,50 @@ import { useToggle } from "react-use";
 import CategoryPanel from "./CategoryPanel";
 import { useCats } from "../../pages/cat-api/hooks-api";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
-import { setTask } from "../../pages/task-api/api";
+import { setTask, editTask } from "../../pages/task-api/api";
 import { toast } from "../CustomToast";
 import { PuffLoader } from "react-spinners";
+import { Dispatch, SetStateAction } from "react";
 
-interface AddTaskModalProps {
-  setModal: (modal: string) => void;
+interface TaskModalProps {
+  setModal: Dispatch<SetStateAction<ModalType | null>>;
+  type: "add" | "edit";
+  toBeUpdTask?: Task;
 }
 
 type FieldValuesType = Exclude<Task, "time">;
 
-export default function AddTaskModal({ setModal }: AddTaskModalProps) {
+export default function TaskModal({ setModal, type, toBeUpdTask }: TaskModalProps) {
   const queryClient = useQueryClient();
 
   const { cats, isLoading, isSuccess, error } = useCats();
 
-  const mutation = useMutation((task: Task) => setTask(task), {
+  const mutation = useMutation((task: Task) => (type === "add" ? setTask(task) : editTask(toBeUpdTask!._id!, task)), {
     onError: (error, variables, context) => {
       let message = (error as any).response.data.message.fr;
       toast({ type: "error", message });
     },
     onSuccess: (data, variables, context) => {
-      toast({ type: "success", message: "تکلیف با موفقیت ساخته شد!" });
+      let message = type === "add" ? "تکلیف با موفقیت ساخته شد!" : "تکلیف با موفقیت ویرایش شد!";
+      toast({ type: "success", message });
       queryClient.invalidateQueries("tasks");
-      setModal("");
+      setModal(null);
     },
   });
 
   const [categoryPanel, toggleCategoryPanel] = useToggle(false);
 
   const { control, handleSubmit } = useForm<FieldValuesType>({
-    defaultValues: {
-      priority: "medium",
-      title: "",
-      category: null!,
-      dueDate: new Date(),
-      reminder: false,
-    },
+    defaultValues:
+      type === "add"
+        ? {
+            priority: "medium",
+            title: "",
+            category: null!,
+            dueDate: new Date(),
+            reminder: false,
+          }
+        : toBeUpdTask,
     mode: "onTouched",
   });
 
@@ -58,17 +65,19 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
       category: values.category,
       dueDate: values.dueDate,
       reminder: values.reminder,
-      time: 0,
+      time: type === "add" ? 0 : toBeUpdTask!.time,
     };
-    mutation.mutate(taskData)
+    mutation.mutate(taskData);
   };
 
   return (
     <Modal setModal={setModal}>
       <div className="flex flex-col gap-y-2">
         <div className="flex justify-between items-center">
-          <h1 className="text-[1.3rem] font-semibold text-gray-800 dark:text-white">افزودن تکلیف</h1>
-          <button onClick={() => setModal("")}>
+          <h1 className="text-[1.3rem] font-semibold text-gray-800 dark:text-white">
+            {type === "add" ? "افزودن تکلیف" : "ویرایش تکلیف"}
+          </h1>
+          <button onClick={() => setModal(null)}>
             <Icon icon="gridicons:cross" color="#DC2626" width={22} />
           </button>
         </div>
@@ -127,8 +136,10 @@ export default function AddTaskModal({ setModal }: AddTaskModalProps) {
           />
           <Button
             type="submit"
-            className={`text-white !rounded-sm text-lg font-semibold h-11 ${mutation.isLoading ? 'bg-blue-700' : 'bg-blue-500 shadow-6'}`}
-            text="افزودن"
+            className={`text-white !rounded-sm text-lg font-semibold h-11 ${
+              mutation.isLoading ? "bg-blue-700" : "bg-blue-500 shadow-6"
+            }`}
+            text={type === "add" ? "افزودن" : "ویرایش"}
             {...(mutation.isLoading && { endIcon: <PuffLoader color="white" size={30} />, disabled: true })}
             rippleColor="#e5e7eb"
           />

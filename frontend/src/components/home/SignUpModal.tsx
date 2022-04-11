@@ -9,13 +9,14 @@ import PuffLoader from "react-spinners/PuffLoader";
 
 import { useMutation } from "react-query";
 import { register as registerUser } from "../../pages/user-api/api";
-import { User } from "../../interfaces";
+import { User, Modal as ModalType } from "../../interfaces";
 import { toast } from "../CustomToast";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { Dispatch, SetStateAction } from "react";
 
 interface SignUpModalProps {
-  setModal: (modal: string) => void;
+  setModal: Dispatch<SetStateAction<ModalType | null>>;
 }
 
 interface FieldValuesType {
@@ -78,7 +79,7 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
       <div className="flex flex-col gap-y-2">
         <div className="flex justify-between items-center mb-2">
           <h1 className="text-[1.3rem] font-semibold text-gray-800 dark:text-white">ثبت نام</h1>
-          <button onClick={() => setModal("")}>
+          <button onClick={() => setModal(null)}>
             <Icon icon="gridicons:cross" color="#DC2626" width={22} />
           </button>
         </div>
@@ -147,7 +148,11 @@ export default function SignUpModal({ setModal }: SignUpModalProps) {
               render={({ field }) => <Controls.Checkbox label="مرا به خاطر بسپار" {...field} />}
             /> */}
           <div className="flex flex-col gap-y-4">
-            <LinkButton className="self-end" text="ثبت نام کردم، بریم ورود کنیم:)" onClick={() => setModal("signin")} />
+            <LinkButton
+              className="self-end"
+              text="ثبت نام کردم، بریم ورود کنیم:)"
+              onClick={() => setModal({ type: "signin" })}
+            />
             <Button
               type="submit"
               className={`${
