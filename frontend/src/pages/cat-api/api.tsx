@@ -14,3 +14,9 @@ export const setCat = async (cat: Category) => {
 
   return res.data;
 };
+
+export const deleteCat = async (catId: string) => {
+  const res = await axios.delete(API_URL + catId);
+
+  return res.data;
+};

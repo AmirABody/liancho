@@ -78,7 +78,7 @@ export default function CategoryPanel({ togglePanel }: CategoryPanelProps) {
         <div className="flex items-center gap-x-2">
           <Button
             type="submit"
-            className={`flex-grow text-white !rounded-sm text-lg font-semibold h-11 ${
+            className={`w-1/2 text-white !rounded-sm text-lg font-semibold h-11 ${
               mutation.isLoading ? "bg-green-700" : "bg-green-500 shadow-5"
             }`}
             text="افزودن دسته"
@@ -87,7 +87,7 @@ export default function CategoryPanel({ togglePanel }: CategoryPanelProps) {
           />
           <Button
             type="button"
-            className="flex-grow text-white !rounded-sm text-lg font-semibold h-11 bg-red-500"
+            className="w-1/2 text-white !rounded-sm text-lg font-semibold h-11 bg-red-500"
             onClick={() => togglePanel(false)}
             text="خروج"
             rippleColor="#e5e7eb"

@@ -1,10 +1,13 @@
 import React from "react";
 import chroma from "chroma-js";
-import Select, { ActionMeta, MultiValue, SingleValue, StylesConfig } from "react-select";
+import Select, { ActionMeta, MultiValue, OptionProps, SingleValue, StylesConfig, components } from "react-select";
 import { Category } from "../../interfaces";
 import { FieldError } from "react-hook-form";
 import { Icon } from "@iconify/react";
 import Tooltip from "../Tooltip";
+import { useMutation, useQueryClient } from "react-query";
+import { deleteCat } from "../../pages/cat-api/api";
+import { toast } from "../CustomToast";
 
 interface SelectProps {
   name: string;
@@ -80,7 +83,34 @@ const customStyles: StylesConfig<Category> = {
   singleValue: (styles) => ({ ...styles, color: "white", ...dot("white") }),
 };
 
-export default React.forwardRef<any, SelectProps>(function CategorySelect(
+const Option = (props: OptionProps<Category>) => {
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation((catId: string) => deleteCat(catId), {
+    onSuccess: (data, variables, context) => {
+      toast({type: "success", message: "یسسس درسته!"})
+      queryClient.invalidateQueries('cats')
+      if (props.getValue()[0]._id === variables) props.clearValue();
+    },
+  });
+
+  return (
+    <div className="relative">
+      <components.Option {...props} />
+      <button
+        type="button"
+        className="absolute top-1/2 left-3 -translate-y-1/2"
+        onClick={() => {
+          deleteMutation.mutate(props.data._id);
+        }}
+      >
+        <Icon icon="gridicons:cross" color="#DC2626" width={14} />
+      </button>
+    </div>
+  );
+};
+
+export default React.forwardRef<HTMLSelectElement, SelectProps>(function CategorySelect(
   { name, label, value, options, error = null, onChange, togglePanel, isLoading },
   ref
 ) {
@@ -95,6 +125,7 @@ export default React.forwardRef<any, SelectProps>(function CategorySelect(
               placeholder="انتخاب کنید"
               value={value}
               isLoading={isLoading}
+              components={{ Option }}
               noOptionsMessage={() => "دسته بندی‌ای وجود ندارد!"}
               getOptionValue={({ _id }) => _id}
               getOptionLabel={({ title }) => title}
