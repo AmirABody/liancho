@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { useState } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { DashboardTab } from "../../interfaces";
+import { useAuth } from "../../pages/user-api/hooks-api";
 import IconButton from "../buttons/IconButton";
 import Tooltip from "../Tooltip";
 import Avatar from "./Avatar";
@@ -9,6 +10,8 @@ import TabItem from "./TabItem";
 import TabMenu from "./TabMenu";
 
 export default function Sidebar() {
+  const { user, isLoading } = useAuth();
+
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -47,7 +50,7 @@ export default function Sidebar() {
           />
           </Tooltip>
         </div>
-        <Avatar fullName="مهدی امیرآبادی" picture={require("../../pages/Sample Avatar.jpg")} />
+        {!isLoading && <Avatar fullName={user.fullName} />}
       </div>
       <div className="flex flex-col gap-y-2">
         <div className="w-full flex items-center gap-x-3 bg-gray-500/20 dark:bg-gray-800/40 text-gray-700 dark:text-gray-50 py-3 px-3">
