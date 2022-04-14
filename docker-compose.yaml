@@ -7,12 +7,9 @@ services:
       dockerfile: Dockerfile.prd
     image: liancho-backend
     container_name: liancho-backend-container
-    env_file:
-      - ./.env
     environment:
       NODE_ENV: production
-    ports:
-      - "5000:5000"
+      PORT: 80
     depends_on:
       - mongo
       - frontend
