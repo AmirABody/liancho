@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.prd
+    image: liancho-backend
+    container_name: liancho-backend-container
+    env_file:
+      - ./.env
+    environment:
+      NODE_ENV: production
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+      - frontend
+    networks:
+      - app-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prd
+    image: liancho-frontend
+    container_name: liancho-frontend-container
+  mongo:
+    image: mongo
+    volumes:
+      - data-volume:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  data-volume:
+  node_modules:
+  web-root:
+    driver: local
